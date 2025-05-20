@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Write-eo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Lightened Color Palette */
+        --background-color: #f0f7ff;
+        /* Light blue background */
+        --card-background: #ffffff;
+        /* White card background */
+        --card-secondary: #edf5ff;
+        /* Very light blue secondary */
+        --text-primary: #2c3e50;
+        /* Dark blue-gray text */
+        --text-secondary: #5d7b99;
+        /* Medium blue-gray text */
+        --text-tertiary: #8ca2b7;
+        /* Light blue-gray text */
+        --accent-primary: #4299e1;
+        /* Sky blue accent */
+        --accent-primary-dark: #3182ce;
+        /* Darker sky blue */
+        --accent-primary-light: #63b3ed;
+        /* Lighter sky blue */
+        --accent-secondary: #805ad5;
+        /* Purple accent remains */
+        --accent-glow: rgba(66, 153, 225, 0.3);
+        /* Sky blue glow */
+        --text-on-accent: #ffffff;
+        /* White for text on accent backgrounds */
+        --success-color: #38b2ac;
+        --error-color: #e53e3e;
+        --warning-color: #ed8936;
+        --info-color: #4299e1;
+
+        /* Spacing System */
+        --space-xs: 0.25rem;
+        --space-sm: 0.5rem;
+        --space-md: 1rem;
+        --space-lg: 1.5rem;
+        --space-xl: 2rem;
+        --space-xxl: 3rem;
+
+        /* Typography */
+        --font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-size-xs: 0.75rem;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.25rem;
+        --font-size-xxl: 1.5rem;
+        --font-size-jumbo: 2rem;
+        --font-weight-normal: 400;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --font-weight-bold: 700;
+        --line-height-tight: 1.25;
+        --line-height-normal: 1.5;
+        --line-height-relaxed: 1.75;
+
+        /* Effects */
+        --border-radius-sm: 4px;
+        --border-radius-md: 8px;
+        --border-radius-lg: 12px;
+        --border-radius-xl: 16px;
+        --border-radius-full: 9999px;
+        --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --box-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1),
+          0 1px 3px rgba(0, 0, 0, 0.15);
+        --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --box-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+        /* Transitions */
+        --transition-fast: 150ms ease;
+        --transition-normal: 250ms ease;
+        --transition-slow: 350ms ease;
+
+        /* Z-index system */
+        --z-background: -10;
+        --z-default: 1;
+        --z-dropdown: 10;
+        --z-modal: 100;
+        --z-toast: 1000;
+      }
+
+      /* Base Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-family);
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-normal);
+        background-color: var(--background-color);
+        color: var(--text-primary);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: var(--space-md);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Background Animation */
+      .bg-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: var(--z-background);
+        opacity: 0.4;
+      }
+
+      .bg-animation::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        background: radial-gradient(
+            circle at 20% 35%,
+            rgba(246, 173, 85, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 75% 44%,
+            rgba(128, 90, 213, 0.1) 0%,
+            transparent 40%
+          );
+        transform: rotate(-12deg);
+        animation: bg-shift 15s ease infinite alternate;
+      }
+
+      @keyframes bg-shift {
+        0% {
+          transform: rotate(-12deg) scale(1);
+        }
+
+        100% {
+          transform: rotate(-5deg) scale(1.1);
+        }
+      }
+
+      /* Blockchain-Inspired Background Pattern */
+      .blockchain-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+              circle,
+              rgba(255, 255, 255, 0.1) 2px,
+              transparent 2px
+            )
+            0 0 / 20px 20px,
+          repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 19px,
+            rgba(255, 255, 255, 0.05) 19px,
+            rgba(255, 255, 255, 0.05) 21px
+          ),
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 19px,
+            rgba(255, 255, 255, 0.05) 19px,
+            rgba(255, 255, 255, 0.05) 21px
+          );
+        z-index: var(--z-background);
+        opacity: 0.15;
+        animation: node-pulse 4s ease-in-out infinite;
+      }
+
+      @keyframes node-pulse {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Logo and Branding */
+      .brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: var(--space-lg);
+      }
+
+      .logo {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin-bottom: var(--space-md);
+      }
+
+      .logo-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--card-secondary),
+          var(--card-background)
+        );
+        box-shadow: var(--box-shadow-md);
+        overflow: hidden;
+      }
+
+      .logo-inner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: conic-gradient(
+          from 135deg,
+          transparent 220deg,
+          var(--accent-primary) 300deg,
+          var(--accent-primary-light) 330deg,
+          transparent 345deg
+        );
+        animation: rotate-logo 8s linear infinite;
+      }
+
+      .logo-inner::after {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        border-radius: 50%;
+        background: var(--card-background);
+        z-index: 1;
+      }
+
+      .logo-icon {
+        position: relative;
+        z-index: 2;
+        width: 40px;
+        height: 40px;
+        color: var(--accent-primary);
+      }
+
+      .brand-name {
+        font-size: var(--font-size-xxl);
+        font-weight: var(--font-weight-bold);
+        background-image: linear-gradient(
+          90deg,
+          var(--text-primary),
+          var(--text-secondary)
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-tagline {
+        font-size: var(--font-size-sm);
+        color: var(--text-tertiary);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-top: var(--space-xs);
+      }
+
+      @keyframes rotate-logo {
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Login Card */
+      .login-card {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        background: linear-gradient(
+          145deg,
+          var(--card-background),
+          var(--card-secondary)
+        );
+        border-radius: var(--border-radius-lg);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: var(--space-xl);
+        overflow: hidden;
+        transform: translateZ(0);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(66, 153, 225, 0.2);
+      }
+
+      .login-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-primary-dark),
+          var(--accent-primary-light)
+        );
+        z-index: var(--z-default);
+      }
+
+      .card-title {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+        margin-bottom: var(--space-lg);
+        text-align: center;
+        color: var(--text-primary);
+      }
+
+      /* Form Elements */
+      .form-group {
+        margin-bottom: var(--space-lg);
+        position: relative;
+      }
+
+      .form-label {
+        display: block;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        color: var(--text-secondary);
+        margin-bottom: var(--space-sm);
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input {
+        width: 100%;
+        padding: var(--space-md);
+        background-color: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--border-radius-md);
+        color: var(--text-primary);
+        font-size: var(--font-size-base);
+        transition: all var(--transition-normal);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .input:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 1px var(--accent-primary), 0 0 10px var(--accent-glow);
+      }
+
+      .input-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: var(--space-md);
+        color: var(--text-tertiary);
+        transition: color var(--transition-normal);
+      }
+
+      .input:focus + .input-icon {
+        color: var(--accent-primary);
+      }
+
+      /* Button Styles */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-md) var(--space-lg);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-medium);
+        border-radius: var(--border-radius-md);
+        transition: all var(--transition-normal);
+        cursor: pointer;
+        border: none;
+        outline: none;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--accent-primary),
+          var(--accent-primary-light)
+        );
+        box-shadow: 0 4px 6px rgba(66, 153, 225, 0.25);
+        color: var(--text-on-accent);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px var(--accent-glow);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-primary::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        background: linear-gradient(
+          to bottom right,
+          rgba(255, 255, 255, 0) 30%,
+          rgba(255, 255, 255, 0.25) 50%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        opacity: 0;
+        transform: rotate(25deg) translate(-100%, -100%);
+        transition: transform var(--transition-slow),
+          opacity var(--transition-normal);
+      }
+
+      .btn-primary:hover::after {
+        opacity: 1;
+        transform: rotate(25deg) translate(100%, 100%);
+      }
+
+      .btn-icon {
+        display: inline-flex;
+        margin-right: var(--space-sm);
+      }
+
+      .btn-full {
+        width: 100%;
+      }
+
+      .btn-wallet {
+        background-color: #f7fafc;
+        border: 1px solid #e2e8f0;
+        color: var(--text-primary);
+        padding: var(--space-md);
+        margin-bottom: var(--space-lg);
+      }
+
+      .btn-wallet:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      /* Blockchain-Specific Elements */
+      .wallet-options {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        margin-bottom: var(--space-xl);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: var(--space-lg) 0;
+        color: var(--text-tertiary);
+        font-size: var(--font-size-sm);
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .divider::before {
+        margin-right: var(--space-md);
+      }
+
+      .divider::after {
+        margin-left: var(--space-md);
+      }
+
+      .connected-wallet {
+        display: flex;
+        align-items: center;
+        background-color: var(--card-secondary);
+        border-radius: var(--border-radius-md);
+        padding: var(--space-md);
+        margin-top: var(--space-lg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .wallet-icon {
+        margin-right: var(--space-md);
+        color: var(--success-color);
+      }
+
+      .wallet-address {
+        flex: 1;
+        font-family: monospace;
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .wallet-copy {
+        margin-left: var(--space-sm);
+        padding: var(--space-xs);
+        background: none;
+        border: none;
+        color: var(--text-tertiary);
+        cursor: pointer;
+        transition: color var(--transition-normal);
+      }
+
+      .wallet-copy:hover {
+        color: var(--text-primary);
+      }
+
+      /* Blockchain Network Indicator */
+      .network-indicator {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        top: var(--space-md);
+        right: var(--space-md);
+        font-size: var(--font-size-xs);
+        color: var(--text-tertiary);
+      }
+
+      .network-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--success-color);
+        margin-right: var(--space-xs);
+        position: relative;
+      }
+
+      .network-dot::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: var(--success-color);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+
+        50% {
+          transform: scale(2);
+          opacity: 0;
+        }
+
+        100% {
+          transform: scale(1);
+          opacity: 0;
+        }
+      }
+
+      /* Additional UI Elements */
+      .error-message {
+        color: var(--error-color);
+        font-size: var(--font-size-sm);
+        margin-top: var(--space-xs);
+        display: flex;
+        align-items: center;
+      }
+
+      .error-icon {
+        margin-right: var(--space-xs);
+      }
+
+      .remember-me {
+        display: flex;
+        align-items: center;
+        margin-bottom: var(--space-lg);
+      }
+
+      .remember-me label {
+        margin-left: var(--space-sm);
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      .checkbox {
+        position: relative;
+        width: 18px;
+        height: 18px;
+        appearance: none;
+        background-color: var(--card-secondary);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        transition: all var(--transition-normal);
+      }
+
+      .checkbox:checked {
+        background-color: var(--accent-primary);
+        border-color: var(--accent-primary);
+      }
+
+      .checkbox:checked::before {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-primary);
+        font-size: 12px;
+      }
+
+      .forgot-password {
+        display: block;
+        text-align: right;
+        font-size: var(--font-size-sm);
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color var(--transition-normal);
+        margin-bottom: var(--space-lg);
+      }
+
+      .forgot-password:hover {
+        color: var(--accent-primary);
+      }
+
+      .login-footer {
+        margin-top: var(--space-xl);
+        text-align: center;
+        font-size: var(--font-size-sm);
+        color: var(--text-tertiary);
+      }
+
+      .signup-link {
+        color: var(--accent-primary);
+        text-decoration: none;
+        transition: color var(--transition-normal);
+      }
+
+      .signup-link:hover {
+        color: var(--accent-primary-light);
+        text-decoration: underline;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 480px) {
+        .login-card {
+          padding: var(--space-lg);
+          max-width: 100%;
+        }
+
+        .brand-name {
+          font-size: var(--font-size-xl);
+        }
+
+        .logo {
+          width: 60px;
+          height: 60px;
+        }
+
+        .btn {
+          padding: var(--space-sm) var(--space-md);
+        }
+
+        .wallet-options {
+          gap: var(--space-sm);
+        }
+      }
+
+      /* Accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        .bg-animation::before,
+        .logo-inner::before,
+        .blockchain-pattern,
+        .btn-primary:hover::after,
+        .network-dot::after {
+          animation: none;
+        }
+
+        .btn-primary:hover {
+          transform: none;
+        }
+      }
+
+      *:focus-visible {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --accent-glow: rgba(246, 173, 85, 0.2);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- This is the only element where React will mount the app -->
+    <div id="root"></div>
+
+    <!-- React scripts will be added here by the build process -->
+  </body>
+</html>

@@ -1,0 +1,65 @@
+# Node dependencies
+/node_modules/
+
+# Build outputs
+/build/
+/dist/
+/public/build/
+
+# Next.js (if used)
+/.next/
+/out/
+
+# React Native packager
+.expo/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log
+
+# Runtime data
+/pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage reports
+/coverage/
+/.nyc_output/
+
+# Environment files
+.env
+.env.*.local
+.env.*.development
+.env.*.test
+.env.*.production
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# IDE / editor folders
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Misc
+.Dockerfile.swp
+*.swp
+*.swo
+*.tmp
+
+# Yarn v2+
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Optional: local MongoDB database files, if you kept them within your project
+/data/db
