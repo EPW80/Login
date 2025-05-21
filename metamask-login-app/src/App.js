@@ -1,11 +1,8 @@
-import React from 'react';
-import LoginPage from './pages/LoginPage';
-import "bootstrap/dist/css/bootstrap.min.css";
+import React from "react";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
-  return (
-    <LoginPage />
-  );
+  return <LoginPage />;
 }
 
 export default App;

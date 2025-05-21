@@ -3,6 +3,8 @@ import BrandLogo from "../components/BrandLogo";
 import NetworkIndicator from "../components/NetworkIndicator";
 import WalletConnect from "../components/WalletConnect";
 import EmailForm from "../components/EmailForm";
+import "../styles/components/LoginCard.css";
+import "../styles/global.css";
 
 const LoginPage = () => {
   // State management

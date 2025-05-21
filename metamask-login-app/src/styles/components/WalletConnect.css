@@ -1,0 +1,58 @@
+/* Wallet Connect */
+.wallet-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.btn-wallet {
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  color: var(--text-primary);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.btn-wallet:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.connected-wallet {
+  display: flex;
+  align-items: center;
+  background-color: var(--card-secondary);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  margin-top: var(--space-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wallet-icon {
+  margin-right: var(--space-md);
+  color: var(--success-color);
+}
+
+.wallet-address {
+  flex: 1;
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wallet-copy {
+  margin-left: var(--space-sm);
+  padding: var(--space-xs);
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: color var(--transition-normal);
+}
+
+.wallet-copy:hover {
+  color: var(--text-primary);
+}

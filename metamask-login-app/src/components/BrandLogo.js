@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react";
+import "../styles/components/BrandLogo.css";
 
-const BrandLogo = ({ name = "Write-eo", tagline = "Dapp Journal" }) => {
+const BrandLogo = ({ name = "Block Secure", tagline = "Decentralized Security" }) => {
   return (
     <div className="brand">
       <div className="logo">

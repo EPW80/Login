@@ -1,4 +1,15 @@
 require('dotenv').config();
+
+// Validate required environment variables
+const requiredEnvVars = ['JWT_SECRET', 'ETH_NODE_URL'];
+const missingEnvVars = requiredEnvVars.filter(name => !process.env[name]);
+
+if (missingEnvVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingEnvVars.join(', '));
+  console.error('Please set these variables in your .env file');
+  process.exit(1);
+}
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");

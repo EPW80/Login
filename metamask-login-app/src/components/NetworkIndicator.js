@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/components/NetworkIndicator.css";
 
 const NetworkIndicator = ({ network = "Ethereum Mainnet" }) => {
   return (

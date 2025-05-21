@@ -1,4 +1,6 @@
 import React from "react";
+import "../styles/components/WalletConnect.css";
+import "../styles/components/Buttons.css";
 
 const WalletConnect = ({
   connectWallet,

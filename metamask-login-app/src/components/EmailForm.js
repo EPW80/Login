@@ -1,4 +1,6 @@
 import React from "react";
+import "../styles/components/EmailForm.css";
+import "../styles/components/Buttons.css";
 
 const EmailForm = ({
   email,
