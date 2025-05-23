@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// Pre-save hook to ensure nonce is always set
+// Index for quick lookup
 userSchema.pre("save", function (next) {
   // If this is a new user without a nonce, generate one
   if (this.isNew && !this.nonce) {

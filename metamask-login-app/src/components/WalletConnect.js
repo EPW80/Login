@@ -7,15 +7,24 @@ const WalletConnect = ({
   isConnected,
   walletAddress,
   copyWalletAddress,
-  isLoading, // Add isLoading prop
+  isLoading,
 }) => {
+  // Handle different wallet types - for future expansion
+  const handleWalletClick = (walletType) => {
+    console.log(`Connecting to ${walletType}`);
+    // For now, all wallets use the same connect function
+    // Future: implement different connection logic per wallet type
+    connectWallet();
+  };
+
   return (
     <>
       <div className="wallet-options">
         <Button
           variant="wallet"
           fullWidth
-          onClick={() => connectWallet("MetaMask")}
+          onClick={() => handleWalletClick("MetaMask")}
+          disabled={isLoading}
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -33,12 +42,13 @@ const WalletConnect = ({
             </svg>
           }
         >
-          Connect with MetaMask
+          {isLoading ? "Connecting..." : "Connect with MetaMask"}
         </Button>
 
         <button
           className="btn btn-wallet btn-full"
-          onClick={() => connectWallet("Coinbase Wallet")}
+          onClick={() => handleWalletClick("Coinbase Wallet")}
+          disabled={isLoading}
         >
           <svg
             className="btn-icon"
@@ -56,12 +66,13 @@ const WalletConnect = ({
             <line x1="12" y1="8" x2="12" y2="16"></line>
             <line x1="8" y1="12" x2="16" y2="12"></line>
           </svg>
-          Connect with Coinbase Wallet
+          {isLoading ? "Connecting..." : "Connect with Coinbase Wallet"}
         </button>
 
         <button
           className="btn btn-wallet btn-full"
-          onClick={() => connectWallet("WalletConnect")}
+          onClick={() => handleWalletClick("WalletConnect")}
+          disabled={isLoading}
         >
           <svg
             className="btn-icon"
@@ -79,7 +90,7 @@ const WalletConnect = ({
             <path d="M12 8v8"></path>
             <path d="M8 12h8"></path>
           </svg>
-          Connect with WalletConnect
+          {isLoading ? "Connecting..." : "Connect with WalletConnect"}
         </button>
       </div>
 
@@ -119,15 +130,6 @@ const WalletConnect = ({
           </button>
         </div>
       )}
-
-      {/* Loading state button
-      <button
-        onClick={connectWallet}
-        disabled={isLoading}
-        className="wallet-button"
-      >
-        {isLoading ? "Connecting..." : "Connect MetaMask"}
-      </button> */}
     </>
   );
 };

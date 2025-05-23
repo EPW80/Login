@@ -1,7 +1,10 @@
 import React from "react";
 import "../styles/components/BrandLogo.css";
 
-const BrandLogo = ({ name = "Block Secure", tagline = "Decentralized Security" }) => {
+const BrandLogo = ({
+  name = "Block Secure",
+  tagline = "Decentralized Security",
+}) => {
   return (
     <div className="brand">
       <div className="logo">

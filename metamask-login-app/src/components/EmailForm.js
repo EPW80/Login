@@ -9,11 +9,7 @@ const EmailForm = ({
   errorMessage,
   setErrorMessage,
   handleSubmit,
-  connectWallet,
   isLoading,
-  isConnected,
-  walletAddress,
-  copyWalletAddress,
 }) => {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -43,6 +39,7 @@ const EmailForm = ({
               value={email}
               onChange={handleEmailChange}
               autoComplete="email"
+              disabled={isLoading}
             />
             <svg
               className="input-icon"
@@ -75,6 +72,7 @@ const EmailForm = ({
               value={password}
               onChange={handlePasswordChange}
               autoComplete="current-password"
+              disabled={isLoading}
             />
             <svg
               className="input-icon"
@@ -132,8 +130,9 @@ const EmailForm = ({
         <button
           type="submit"
           className="btn btn-primary btn-full-width"
+          disabled={isLoading}
         >
-          Sign In
+          {isLoading ? "Signing In..." : "Sign In"}
           <svg
             className="btn-icon-right"
             xmlns="http://www.w3.org/2000/svg"
@@ -151,24 +150,6 @@ const EmailForm = ({
           </svg>
         </button>
       </form>
-
-      <button 
-        className="btn btn-wallet" 
-        onClick={connectWallet}
-        disabled={isLoading}
-      >
-        {isConnected ? (
-          <>
-            {walletAddress}
-            <span className="copy-icon" onClick={copyWalletAddress}>📋</span>
-          </>
-        ) : (
-          <>
-            Connect Wallet
-            <svg className="wallet-icon">...</svg>
-          </>
-        )}
-      </button>
     </>
   );
 };

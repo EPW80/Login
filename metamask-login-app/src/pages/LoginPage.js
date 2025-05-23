@@ -5,7 +5,7 @@ import WalletConnect from "../components/WalletConnect";
 import EmailForm from "../components/EmailForm";
 import "../styles/components/LoginCard.css";
 import "../styles/global.css";
-import axios from "axios"; // Make sure to install this: npm install axios
+import axios from "axios";
 
 const LoginPage = () => {
   // State management
@@ -33,7 +33,7 @@ const LoginPage = () => {
       }
       
       try {
-        // Try to get network ID - wrap in try/catch
+        // Try to get network ID
         try {
           const chainId = await window.ethereum.request({ method: 'eth_chainId' });
           setNetworkId(parseInt(chainId, 16));
@@ -60,7 +60,7 @@ const LoginPage = () => {
     
     // Listen for account changes
     if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts) => {
+      const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
           setWalletAddress(accounts[0]);
           setIsConnected(true);
@@ -68,21 +68,20 @@ const LoginPage = () => {
           setWalletAddress("");
           setIsConnected(false);
         }
-      });
+      };
       
-      // Listen for chain changes
-      window.ethereum.on('chainChanged', (chainId) => {
+      const handleChainChanged = (chainId) => {
         setNetworkId(parseInt(chainId, 16));
-      });
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
+      
+      return () => {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      };
     }
-    
-    return () => {
-      // Clean up listeners
-      if (window.ethereum) {
-        window.ethereum.removeAllListeners('accountsChanged');
-        window.ethereum.removeAllListeners('chainChanged');
-      }
-    };
   }, []);
 
   // Form submission handler
@@ -103,7 +102,6 @@ const LoginPage = () => {
     setIsLoading(true);
     
     try {
-      // Replace with your actual authentication endpoint
       const response = await axios.post('http://localhost:8000/api/auth/login', {
         email,
         password
@@ -111,7 +109,6 @@ const LoginPage = () => {
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        // Redirect or update UI state here
         console.log("Login successful!");
       }
     } catch (error) {
@@ -121,7 +118,7 @@ const LoginPage = () => {
     }
   };
 
-  // Wallet connection handler - actual implementation
+  // Wallet connection handler - removed parameter as it's not used
   const connectWallet = async () => {
     if (!window.ethereum) {
       setErrorMessage("MetaMask is not installed! Please install it first.");
@@ -144,41 +141,40 @@ const LoginPage = () => {
       const chainId = await window.ethereum.request({ method: 'eth_chainId' });
       setNetworkId(parseInt(chainId, 16));
       
-      // Optional: Get nonce and sign message for auth
+      // Authenticate with backend
       try {
-        // First check if the user exists or create a new one
+        // Find or create user
         const userResponse = await axios.post('http://localhost:8000/api/users/find-or-create', {
           publicAddress: accounts[0]
         });
         
-        // Get the nonce from the user
         const nonce = userResponse.data.nonce;
         
-        // Ask user to sign the message
+        // Sign message
         const message = `Sign this message to confirm your identity: ${nonce}`;
         const signature = await window.ethereum.request({
           method: 'personal_sign',
           params: [message, accounts[0]]
         });
         
-        // Verify the signature on the backend
+        // Verify signature
         const authResponse = await axios.post('http://localhost:8000/api/auth/authenticate', {
           publicAddress: accounts[0],
           signature
         });
         
-        // Store the token
-        if (authResponse.data.token) {
-          localStorage.setItem('token', authResponse.data.token);
+        // Store tokens
+        if (authResponse.data.accessToken) {
+          localStorage.setItem('accessToken', authResponse.data.accessToken);
+          localStorage.setItem('refreshToken', authResponse.data.refreshToken);
           console.log("Wallet authentication successful!");
         }
       } catch (authError) {
         console.error("Authentication error:", authError);
-        // Still connected to wallet, but auth failed
+        setErrorMessage("Authentication failed. Please try again.");
       }
     } catch (error) {
       if (error.code === 4001) {
-        // User rejected the request
         setErrorMessage("Please connect your wallet to continue");
       } else {
         setErrorMessage("Error connecting to MetaMask. Please try again.");
@@ -208,16 +204,13 @@ const LoginPage = () => {
       <div className="bg-animation"></div>
       <div className="blockchain-pattern"></div>
       <main>
-        {/* Brand Logo Component */}
         <BrandLogo />
 
         <div className="login-card">
-          {/* Network Indicator Component */}
           <NetworkIndicator networkId={networkId} />
 
           <h2 className="card-title">Sign In</h2>
 
-          {/* Wallet Connection Component */}
           <WalletConnect
             connectWallet={connectWallet}
             isConnected={isConnected}
@@ -226,7 +219,6 @@ const LoginPage = () => {
             isLoading={isLoading}
           />
 
-          {/* Email Form Component */}
           <EmailForm
             email={email}
             setEmail={setEmail}
