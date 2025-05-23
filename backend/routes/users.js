@@ -3,6 +3,7 @@ const router = express.Router();
 const { validateAddress } = require("../middleware/validators");
 const User = require("../models/User");
 const { generateNonce } = require("../utils/crypto");
+const userController = require("../controllers/users");
 
 // Get or create user
 router.get("/", validateAddress, async (req, res, next) => {
@@ -19,5 +20,7 @@ router.get("/", validateAddress, async (req, res, next) => {
     next(err);
   }
 });
+
+router.post("/find-or-create", userController.findOrCreate);
 
 module.exports = router;

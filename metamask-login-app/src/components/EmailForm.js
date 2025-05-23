@@ -1,6 +1,5 @@
 import React from "react";
 import "../styles/components/EmailForm.css";
-import "../styles/components/Buttons.css";
 
 const EmailForm = ({
   email,
@@ -10,6 +9,11 @@ const EmailForm = ({
   errorMessage,
   setErrorMessage,
   handleSubmit,
+  connectWallet,
+  isLoading,
+  isConnected,
+  walletAddress,
+  copyWalletAddress,
 }) => {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -125,11 +129,13 @@ const EmailForm = ({
           Forgot password?
         </button>
 
-        <button type="submit" className="btn btn-primary btn-full">
+        <button
+          type="submit"
+          className="btn btn-primary btn-full-width"
+        >
           Sign In
           <svg
-            className="btn-icon"
-            style={{ marginLeft: "8px", marginRight: 0 }}
+            className="btn-icon-right"
             xmlns="http://www.w3.org/2000/svg"
             width="18"
             height="18"
@@ -145,6 +151,24 @@ const EmailForm = ({
           </svg>
         </button>
       </form>
+
+      <button 
+        className="btn btn-wallet" 
+        onClick={connectWallet}
+        disabled={isLoading}
+      >
+        {isConnected ? (
+          <>
+            {walletAddress}
+            <span className="copy-icon" onClick={copyWalletAddress}>📋</span>
+          </>
+        ) : (
+          <>
+            Connect Wallet
+            <svg className="wallet-icon">...</svg>
+          </>
+        )}
+      </button>
     </>
   );
 };

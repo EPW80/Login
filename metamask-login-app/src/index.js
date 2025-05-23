@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './styles/index.css'; // Import our main CSS file
+import './styles/index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './utils/api'; // Import to initialize the interceptors
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

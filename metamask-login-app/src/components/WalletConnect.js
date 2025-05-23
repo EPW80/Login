@@ -1,37 +1,40 @@
 import React from "react";
 import "../styles/components/WalletConnect.css";
-import "../styles/components/Buttons.css";
+import Button from "./Button";
 
 const WalletConnect = ({
   connectWallet,
   isConnected,
   walletAddress,
   copyWalletAddress,
+  isLoading, // Add isLoading prop
 }) => {
   return (
     <>
       <div className="wallet-options">
-        <button
-          className="btn btn-wallet btn-full"
+        <Button
+          variant="wallet"
+          fullWidth
           onClick={() => connectWallet("MetaMask")}
+          leftIcon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          }
         >
-          <svg
-            className="btn-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
-            <line x1="2" y1="10" x2="22" y2="10"></line>
-          </svg>
           Connect with MetaMask
-        </button>
+        </Button>
 
         <button
           className="btn btn-wallet btn-full"
@@ -116,6 +119,15 @@ const WalletConnect = ({
           </button>
         </div>
       )}
+
+      {/* Loading state button
+      <button
+        onClick={connectWallet}
+        disabled={isLoading}
+        className="wallet-button"
+      >
+        {isLoading ? "Connecting..." : "Connect MetaMask"}
+      </button> */}
     </>
   );
 };
