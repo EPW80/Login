@@ -1,6 +1,5 @@
 import React from "react";
 import "../styles/components/WalletConnect.css";
-import Button from "./Button";
 
 const WalletConnect = ({
   connectWallet,
@@ -9,128 +8,65 @@ const WalletConnect = ({
   copyWalletAddress,
   isLoading,
 }) => {
-  // Handle different wallet types - for future expansion
-  const handleWalletClick = (walletType) => {
-    console.log(`Connecting to ${walletType}`);
-    // For now, all wallets use the same connect function
-    // Future: implement different connection logic per wallet type
-    connectWallet();
+  // Remove unused walletType parameter and fix the handler
+  const handleWalletClick = () => {
+    if (!isConnected && !isLoading) {
+      connectWallet();
+    }
   };
 
   return (
-    <>
-      <div className="wallet-options">
-        <Button
-          variant="wallet"
-          fullWidth
-          onClick={() => handleWalletClick("MetaMask")}
-          disabled={isLoading}
-          leftIcon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
-              <line x1="2" y1="10" x2="22" y2="10"></line>
-            </svg>
-          }
-        >
-          {isLoading ? "Connecting..." : "Connect with MetaMask"}
-        </Button>
-
+    <div className="wallet-connect">
+      {!isConnected ? (
         <button
-          className="btn btn-wallet btn-full"
-          onClick={() => handleWalletClick("Coinbase Wallet")}
+          className="btn btn-wallet"
+          onClick={handleWalletClick}
           disabled={isLoading}
         >
-          <svg
-            className="btn-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-          </svg>
-          {isLoading ? "Connecting..." : "Connect with Coinbase Wallet"}
+          {isLoading ? (
+            <>
+              <span className="spinner"></span>
+              Connecting...
+            </>
+          ) : (
+            <>
+              <svg
+                className="wallet-icon"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                />
+              </svg>
+              Connect MetaMask
+            </>
+          )}
         </button>
-
-        <button
-          className="btn btn-wallet btn-full"
-          onClick={() => handleWalletClick("WalletConnect")}
-          disabled={isLoading}
-        >
-          <svg
-            className="btn-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <path d="M12 8v8"></path>
-            <path d="M8 12h8"></path>
-          </svg>
-          {isLoading ? "Connecting..." : "Connect with WalletConnect"}
-        </button>
-      </div>
-
-      {isConnected && (
-        <div className="connected-wallet">
-          <svg
-            className="wallet-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="9 11 12 14 22 4"></polyline>
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-          </svg>
-          <span className="wallet-address">{walletAddress}</span>
-          <button className="wallet-copy" onClick={copyWalletAddress}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-          </button>
+      ) : (
+        <div className="wallet-connected">
+          <div className="wallet-info">
+            <span className="wallet-label">Connected:</span>
+            <span className="wallet-address" onClick={copyWalletAddress}>
+              {walletAddress}
+              <svg
+                className="copy-icon"
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+              >
+                <path
+                  fill="currentColor"
+                  d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+                />
+              </svg>
+            </span>
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

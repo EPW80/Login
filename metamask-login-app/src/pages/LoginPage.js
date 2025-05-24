@@ -2,48 +2,80 @@ import React, { useState, useEffect } from "react";
 import BrandLogo from "../components/BrandLogo";
 import NetworkIndicator from "../components/NetworkIndicator";
 import WalletConnect from "../components/WalletConnect";
-import EmailForm from "../components/EmailForm";
 import "../styles/components/LoginCard.css";
 import "../styles/global.css";
-import axios from "axios";
+import api from "../utils/api"; // Import the configured API instance
 
 const LoginPage = () => {
-  // State management
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [networkId, setNetworkId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Helper function to check MetaMask availability
-  const isMetaMaskAvailable = () => {
-    return typeof window !== 'undefined' && 
-           typeof window.ethereum !== 'undefined' && 
-           window.ethereum.isMetaMask;
+  // Add the missing handleApiError function
+  const handleApiError = (error, defaultMessage) => {
+    if (error.response) {
+      // Server responded with error status
+      const status = error.response.status;
+      const serverMessage =
+        error.response.data?.error || error.response.data?.message;
+
+      switch (status) {
+        case 400:
+          return serverMessage || "Invalid request. Please check your input.";
+        case 401:
+          return "Authentication failed. Please try again.";
+        case 403:
+          return "Access denied. Please check your permissions.";
+        case 404:
+          return "Service not found. Please try again later.";
+        case 429:
+          return "Too many requests. Please wait a moment and try again.";
+        case 500:
+          return "Server error. Please try again later.";
+        default:
+          return serverMessage || defaultMessage;
+      }
+    } else if (error.request) {
+      // Network error - no response received
+      return "Network error. Please check your internet connection.";
+    } else {
+      // Something else happened
+      console.error("Error:", error.message);
+      return defaultMessage;
+    }
   };
 
-  // Check if MetaMask is already connected on component mount
+  const isMetaMaskAvailable = () => {
+    return (
+      typeof window !== "undefined" &&
+      typeof window.ethereum !== "undefined" &&
+      window.ethereum.isMetaMask
+    );
+  };
+
   useEffect(() => {
     const checkConnection = async () => {
       if (!isMetaMaskAvailable()) {
-        console.log("MetaMask is not available");
+        // Remove console.log - handle silently or show UI indicator
         return;
       }
-      
+
       try {
-        // Try to get network ID
         try {
-          const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+          const chainId = await window.ethereum.request({
+            method: "eth_chainId",
+          });
           setNetworkId(parseInt(chainId, 16));
         } catch (chainError) {
           console.warn("Could not get chain ID:", chainError);
         }
-        
-        // Try to get connected accounts
+
         try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          const accounts = await window.ethereum.request({
+            method: "eth_accounts",
+          });
           if (accounts.length > 0) {
             setWalletAddress(accounts[0]);
             setIsConnected(true);
@@ -55,10 +87,9 @@ const LoginPage = () => {
         console.error("Error checking connection:", error);
       }
     };
-    
+
     checkConnection();
-    
-    // Listen for account changes
+
     if (window.ethereum) {
       const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
@@ -69,134 +100,109 @@ const LoginPage = () => {
           setIsConnected(false);
         }
       };
-      
+
       const handleChainChanged = (chainId) => {
         setNetworkId(parseInt(chainId, 16));
       };
 
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
-      window.ethereum.on('chainChanged', handleChainChanged);
-      
+      window.ethereum.on("accountsChanged", handleAccountsChanged);
+      window.ethereum.on("chainChanged", handleChainChanged);
+
       return () => {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        window.ethereum.removeListener('chainChanged', handleChainChanged);
+        window.ethereum.removeListener(
+          "accountsChanged",
+          handleAccountsChanged
+        );
+        window.ethereum.removeListener("chainChanged", handleChainChanged);
       };
     }
   }, []);
 
-  // Form submission handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
-    
-    if (!email) {
-      setErrorMessage("Please enter your email address");
-      return;
-    }
-
-    if (!password) {
-      setErrorMessage("Please enter your password");
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      const response = await axios.post('http://localhost:8000/api/auth/login', {
-        email,
-        password
-      });
-      
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        console.log("Login successful!");
-      }
-    } catch (error) {
-      setErrorMessage(error.response?.data?.error || "Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Wallet connection handler - removed parameter as it's not used
   const connectWallet = async () => {
     if (!window.ethereum) {
       setErrorMessage("MetaMask is not installed! Please install it first.");
       return;
     }
-    
+
     setIsLoading(true);
     setErrorMessage("");
-    
+
     try {
-      // Request account access
-      const accounts = await window.ethereum.request({ 
-        method: 'eth_requestAccounts' 
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
       });
-      
+
       setWalletAddress(accounts[0]);
       setIsConnected(true);
-      
-      // Get current chain ID
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
       setNetworkId(parseInt(chainId, 16));
-      
-      // Authenticate with backend
+
       try {
-        // Find or create user
-        const userResponse = await axios.post('http://localhost:8000/api/users/find-or-create', {
-          publicAddress: accounts[0]
+        const userResponse = await api.post("/users/find-or-create", {
+          publicAddress: accounts[0],
         });
-        
+
         const nonce = userResponse.data.nonce;
-        
-        // Sign message
         const message = `Sign this message to confirm your identity: ${nonce}`;
         const signature = await window.ethereum.request({
-          method: 'personal_sign',
-          params: [message, accounts[0]]
+          method: "personal_sign",
+          params: [message, accounts[0]],
         });
-        
-        // Verify signature
-        const authResponse = await axios.post('http://localhost:8000/api/auth/authenticate', {
+
+        const authResponse = await api.post("/auth/authenticate", {
           publicAddress: accounts[0],
-          signature
+          signature,
         });
-        
-        // Store tokens
+
         if (authResponse.data.accessToken) {
-          localStorage.setItem('accessToken', authResponse.data.accessToken);
-          localStorage.setItem('refreshToken', authResponse.data.refreshToken);
-          console.log("Wallet authentication successful!");
+          localStorage.setItem("accessToken", authResponse.data.accessToken);
+          localStorage.setItem("refreshToken", authResponse.data.refreshToken);
+
+          // Replace console.log with proper success handling
+          setErrorMessage(""); // Clear any errors
+          // Optional: Redirect to dashboard or show success message
+          // window.location.href = '/dashboard';
         }
       } catch (authError) {
-        console.error("Authentication error:", authError);
-        setErrorMessage("Authentication failed. Please try again.");
+        const errorMessage = handleApiError(authError, "Authentication failed");
+        setErrorMessage(errorMessage);
       }
     } catch (error) {
       if (error.code === 4001) {
         setErrorMessage("Please connect your wallet to continue");
       } else {
         setErrorMessage("Error connecting to MetaMask. Please try again.");
-        console.error(error);
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Format wallet address for display
   const formatAddress = (address) => {
-    if (!address) return '';
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+    if (!address) return "";
+    return `${address.substring(0, 6)}...${address.substring(
+      address.length - 4
+    )}`;
   };
 
-  // Copy wallet address to clipboard
   const copyWalletAddress = () => {
     if (walletAddress) {
       navigator.clipboard.writeText(walletAddress);
       alert("Wallet address copied to clipboard!");
     }
+  };
+
+  // Replace placeholder click handler with proper implementation
+  const handleSignUp = () => {
+    // Option 1: Navigate to sign up page
+    // window.location.href = '/signup';
+
+    // Option 2: Show modal
+    // setShowSignUpModal(true);
+
+    // Option 3: For now, show informative message
+    setErrorMessage("Sign up functionality coming soon!");
   };
 
   return (
@@ -209,7 +215,9 @@ const LoginPage = () => {
         <div className="login-card">
           <NetworkIndicator networkId={networkId} />
 
-          <h2 className="card-title">Sign In</h2>
+          <h2 className="card-title">Connect Your Wallet</h2>
+
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
 
           <WalletConnect
             connectWallet={connectWallet}
@@ -218,26 +226,11 @@ const LoginPage = () => {
             copyWalletAddress={copyWalletAddress}
             isLoading={isLoading}
           />
-
-          <EmailForm
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            errorMessage={errorMessage}
-            setErrorMessage={setErrorMessage}
-            handleSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
         </div>
 
         <div className="login-footer">
           Don't have an account?{" "}
-          <button
-            type="button"
-            className="signup-link"
-            onClick={() => console.log("Sign up clicked")}
-          >
+          <button type="button" className="signup-link" onClick={handleSignUp}>
             Sign up
           </button>
         </div>

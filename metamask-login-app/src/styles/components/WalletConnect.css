@@ -56,3 +56,50 @@
 .wallet-copy:hover {
   color: var(--text-primary);
 }
+
+/* src/styles/components/WalletConnect.css */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.wallet-connected {
+  padding: 1rem;
+  border: 1px solid var(--accent-primary);
+  border-radius: 8px;
+  background: rgba(0, 204, 255, 0.1);
+}
+
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wallet-address {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.copy-icon {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.copy-icon:hover {
+  opacity: 1;
+}
