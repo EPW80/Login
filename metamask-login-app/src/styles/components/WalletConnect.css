@@ -1,105 +1,800 @@
-/* Wallet Connect */
-.wallet-options {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
+/* Enhanced Professional Blockchain Wallet Connect Styles */
+.wallet-connect {
+  width: 100%;
+  position: relative;
 }
 
+/* 3D Hexagonal Background Pattern */
+.wallet-connect::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(66, 153, 225, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(128, 90, 213, 0.1) 0%, transparent 50%);
+  border-radius: var(--border-radius-xl);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.wallet-connect:hover::before {
+  opacity: 1;
+}
+
+/* Premium Wallet Button with 3D Effects */
 .btn-wallet {
-  background-color: #f7fafc;
-  border: 1px solid #e2e8f0;
-  color: var(--text-primary);
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-
-.btn-wallet:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.connected-wallet {
-  display: flex;
-  align-items: center;
-  background-color: var(--card-secondary);
-  border-radius: var(--border-radius-md);
-  padding: var(--space-md);
-  margin-top: var(--space-lg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.wallet-icon {
-  margin-right: var(--space-md);
-  color: var(--success-color);
-}
-
-.wallet-address {
-  flex: 1;
-  font-family: monospace;
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
+  width: 100%;
+  background: linear-gradient(145deg, #1a2332 0%, #2d3748 50%, #1a2332 100%);
+  color: white;
+  border: 2px solid transparent;
+  padding: var(--space-lg) var(--space-xl);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--border-radius-xl);
+  position: relative;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.wallet-copy {
-  margin-left: var(--space-sm);
-  padding: var(--space-xs);
-  background: none;
-  border: none;
-  color: var(--text-tertiary);
   cursor: pointer;
-  transition: color var(--transition-normal);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* 3D Box Shadow */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(66, 153, 225, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  
+  /* Hexagonal clip path for blockchain aesthetic */
+  clip-path: polygon(
+    10px 0%, 
+    calc(100% - 10px) 0%, 
+    100% 10px, 
+    100% calc(100% - 10px), 
+    calc(100% - 10px) 100%, 
+    10px 100%, 
+    0% calc(100% - 10px), 
+    0% 10px
+  );
 }
 
-.wallet-copy:hover {
-  color: var(--text-primary);
+/* 3D Hover Effects */
+.btn-wallet:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.4),
+    0 0 0 2px rgba(66, 153, 225, 0.4),
+    0 0 32px rgba(66, 153, 225, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  background: linear-gradient(145deg, #2563eb 0%, #3b82f6 50%, #1e40af 100%);
 }
 
-/* src/styles/components/WalletConnect.css */
+.btn-wallet:active:not(:disabled) {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(66, 153, 225, 0.3),
+    inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Animated Circuit Pattern Background */
+.btn-wallet::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(90deg, transparent 48%, rgba(66, 153, 225, 0.1) 49%, rgba(66, 153, 225, 0.1) 51%, transparent 52%),
+    linear-gradient(0deg, transparent 48%, rgba(66, 153, 225, 0.1) 49%, rgba(66, 153, 225, 0.1) 51%, transparent 52%);
+  background-size: 20px 20px;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: 1;
+}
+
+.btn-wallet:hover::before {
+  opacity: 1;
+  animation: circuit-flow 2s linear infinite;
+}
+
+/* Holographic Shine Effect */
+.btn-wallet::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(66, 153, 225, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 60%,
+    transparent 70%
+  );
+  transform: rotate(45deg) translate(-100%, -100%);
+  transition: transform 0.6s ease;
+  z-index: 2;
+}
+
+.btn-wallet:hover::after {
+  transform: rotate(45deg) translate(100%, 100%);
+}
+
+/* Button State Variations */
+.btn-wallet--loading {
+  background: linear-gradient(145deg, #1e3a8a 0%, #3730a3 50%, #1e1b4b 100%);
+  cursor: wait;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.btn-wallet--connected {
+  background: linear-gradient(145deg, #065f46 0%, #059669 50%, #064e3b 100%);
+  box-shadow: 
+    0 8px 32px rgba(16, 185, 129, 0.3),
+    0 0 0 1px rgba(16, 185, 129, 0.3),
+    0 0 24px rgba(16, 185, 129, 0.2);
+}
+
+.btn-wallet--success {
+  animation: success-celebration 3s ease-in-out;
+}
+
+/* MetaMask Icon with 3D Effect */
+.metamask-icon {
+  margin-right: var(--space-sm);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: transform var(--transition-normal);
+}
+
+.btn-wallet:hover .metamask-icon {
+  transform: scale(1.1) rotateY(10deg);
+}
+
+/* Enhanced Spinner with Blockchain Aesthetic */
 .spinner {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--accent-primary);
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top: 3px solid #4299e1;
+  border-right: 3px solid #63b3ed;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: 8px;
+  animation: blockchain-spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  margin-right: var(--space-sm);
+  box-shadow: 
+    0 0 0 2px rgba(66, 153, 225, 0.1),
+    0 0 16px rgba(66, 153, 225, 0.3);
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Pulse Dot with Neon Effect */
+.pulse-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #fbbf24 0%, #f59e0b 100%);
+  border-radius: 50%;
+  margin-right: var(--space-sm);
+  box-shadow: 
+    0 0 8px rgba(251, 191, 36, 0.6),
+    0 0 16px rgba(251, 191, 36, 0.3);
+  animation: neon-pulse 1.5s ease-in-out infinite;
 }
 
+/* 3D Connected Wallet Display */
 .wallet-connected {
-  padding: 1rem;
-  border: 1px solid var(--accent-primary);
-  border-radius: 8px;
-  background: rgba(0, 204, 255, 0.1);
+  margin-top: var(--space-lg);
+  padding: var(--space-lg);
+  background: linear-gradient(
+    145deg,
+    rgba(15, 23, 42, 0.9) 0%,
+    rgba(30, 41, 59, 0.8) 50%,
+    rgba(15, 23, 42, 0.9) 100%
+  );
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--border-radius-xl);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  
+  /* 3D Effect */
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(16, 185, 129, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  
+  transition: all var(--transition-normal);
 }
 
+.wallet-connected--authenticated {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 
+    0 16px 48px rgba(16, 185, 129, 0.2),
+    0 0 0 2px rgba(16, 185, 129, 0.3),
+    0 0 32px rgba(16, 185, 129, 0.15),
+    inset 0 2px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Animated Background Pattern */
+.wallet-connected::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 2px 2px, rgba(16, 185, 129, 0.15) 1px, transparent 0);
+  background-size: 24px 24px;
+  animation: matrix-flow 20s linear infinite;
+  opacity: 0.3;
+}
+
+/* Wallet Info Section */
 .wallet-info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-md);
+  position: relative;
+  z-index: 1;
 }
 
+.wallet-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+}
+
+/* 3D Status Indicator */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 
+    0 0 8px rgba(16, 185, 129, 0.6),
+    0 0 16px rgba(16, 185, 129, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+.status-dot::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  border-radius: 50%;
+  animation: status-ring 2s ease-in-out infinite;
+}
+
+.wallet-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: #10b981;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Enhanced Address Display */
 .wallet-address {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(
+    145deg,
+    rgba(30, 41, 59, 0.8) 0%,
+    rgba(51, 65, 85, 0.6) 50%,
+    rgba(30, 41, 59, 0.8) 100%
+  );
+  border-radius: var(--border-radius-lg);
   cursor: pointer;
-  font-family: monospace;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 3D Inset Effect */
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+  
+  border: 1px solid rgba(100, 116, 139, 0.2);
 }
 
+.wallet-address:hover {
+  background: linear-gradient(
+    145deg,
+    rgba(51, 65, 85, 0.9) 0%,
+    rgba(71, 85, 105, 0.7) 50%,
+    rgba(51, 65, 85, 0.9) 100%
+  );
+  border-color: rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(16, 185, 129, 0.2),
+    0 0 24px rgba(16, 185, 129, 0.1);
+}
+
+/* Holographic Address Text */
+.address-text {
+  font-family: "SF Mono", "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e1 50%, #e2e8f0 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 8px rgba(226, 232, 240, 0.3);
+  transition: all var(--transition-normal);
+}
+
+.wallet-address:hover .address-text {
+  background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+/* 3D Copy Icon */
 .copy-icon {
   opacity: 0.6;
-  transition: opacity 0.2s;
+  transition: all var(--transition-normal);
+  color: #94a3b8;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  transform: perspective(100px) rotateX(0deg);
 }
 
-.copy-icon:hover {
+.wallet-address:hover .copy-icon {
   opacity: 1;
+  color: #10b981;
+  transform: perspective(100px) rotateX(15deg) scale(1.1);
+  filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.3));
+}
+
+/* Advanced Animations */
+@keyframes circuit-flow {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 20px; }
+}
+
+@keyframes blockchain-spin {
+  0% { transform: rotate(0deg); border-top-color: #4299e1; }
+  25% { border-right-color: #4299e1; border-top-color: rgba(255, 255, 255, 0.2); }
+  50% { transform: rotate(180deg); border-bottom-color: #4299e1; border-right-color: rgba(255, 255, 255, 0.2); }
+  75% { border-left-color: #4299e1; border-bottom-color: rgba(255, 255, 255, 0.2); }
+  100% { transform: rotate(360deg); border-top-color: #4299e1; border-left-color: rgba(255, 255, 255, 0.2); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 
+      0 0 8px rgba(251, 191, 36, 0.6),
+      0 0 16px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 
+      0 0 16px rgba(251, 191, 36, 0.8),
+      0 0 32px rgba(251, 191, 36, 0.4);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(66, 153, 225, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 12px 48px rgba(59, 130, 246, 0.4),
+      0 0 0 2px rgba(66, 153, 225, 0.4),
+      0 0 32px rgba(59, 130, 246, 0.3);
+  }
+}
+
+@keyframes success-celebration {
+  0%, 100% { transform: scale(1); }
+  10% { transform: scale(1.05); }
+  20% { transform: scale(1); }
+  30% { transform: scale(1.02); }
+  40% { transform: scale(1); }
+}
+
+@keyframes matrix-flow {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(24px); }
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 
+      0 0 8px rgba(16, 185, 129, 0.6),
+      0 0 16px rgba(16, 185, 129, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 
+      0 0 12px rgba(16, 185, 129, 0.8),
+      0 0 24px rgba(16, 185, 129, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+@keyframes status-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Accessibility */
+.btn-wallet:focus-visible {
+  outline: 3px solid rgba(66, 153, 225, 0.6);
+  outline-offset: 4px;
+}
+
+.wallet-address:focus-visible {
+  outline: 3px solid rgba(16, 185, 129, 0.6);
+  outline-offset: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .btn-wallet {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--font-size-base);
+  }
+  
+  .wallet-connected {
+    padding: var(--space-md);
+  }
+  
+  .wallet-address {
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .address-text {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .pulse-dot,
+  .status-dot,
+  .btn-wallet::before,
+  .wallet-connected::before {
+    animation: none;
+  }
+  
+  .btn-wallet:hover,
+  .wallet-address:hover {
+    transform: none;
+  }
+  
+  .btn-wallet::after {
+    display: none;
+  }
+}
+
+/* Connection Details */
+.connection-details {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) 0;
+}
+
+.detail-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--font-weight-medium);
+}
+
+.detail-value {
+  font-size: var(--font-size-sm);
+  color: #10b981;
+  font-weight: var(--font-weight-semibold);
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Copy Notification */
+.copy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.95) 0%,
+    rgba(5, 150, 105, 0.9) 100%
+  );
+  color: white;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  z-index: 1000;
+  
+  /* 3D Effect */
+  box-shadow: 
+    0 8px 32px rgba(16, 185, 129, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  
+  /* Slide in animation */
+  animation: slide-in-right 0.3s ease-out, fade-out 0.3s ease-in 1.7s forwards;
+  
+  /* Backdrop blur for modern look */
+  backdrop-filter: blur(12px);
+}
+
+.copy-notification svg {
+  width: 16px;
+  height: 16px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Enhanced Button States */
+.btn-wallet--signing {
+  background: linear-gradient(145deg, #f59e0b 0%, #d97706 50%, #92400e 100%);
+  box-shadow: 
+    0 8px 32px rgba(245, 158, 11, 0.3),
+    0 0 0 1px rgba(245, 158, 11, 0.3),
+    0 0 24px rgba(245, 158, 11, 0.2);
+  animation: signing-pulse 2s ease-in-out infinite;
+}
+
+.btn-wallet--error {
+  background: linear-gradient(145deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+  box-shadow: 
+    0 8px 32px rgba(220, 38, 38, 0.3),
+    0 0 0 1px rgba(220, 38, 38, 0.3);
+  animation: error-shake 0.5s ease-in-out;
+}
+
+/* Enhanced Spinner Variants */
+.spinner--signing {
+  border-top-color: #f59e0b;
+  border-right-color: #fbbf24;
+  box-shadow: 
+    0 0 0 2px rgba(245, 158, 11, 0.1),
+    0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.spinner--error {
+  border-top-color: #dc2626;
+  border-right-color: #f87171;
+  box-shadow: 
+    0 0 0 2px rgba(220, 38, 38, 0.1),
+    0 0 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Blockchain-inspired Hexagonal Elements */
+.hex-pattern {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.hex-pattern::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 60deg,
+    rgba(66, 153, 225, 0.2) 120deg,
+    transparent 180deg,
+    rgba(66, 153, 225, 0.2) 240deg,
+    transparent 300deg,
+    rgba(66, 153, 225, 0.2) 360deg
+  );
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: hex-rotate 10s linear infinite;
+}
+
+/* Network Status Indicator */
+.network-status {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  z-index: 2;
+}
+
+.network-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+  animation: network-blink 3s ease-in-out infinite;
+}
+
+/* Additional Animations */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes signing-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 8px 32px rgba(245, 158, 11, 0.3),
+      0 0 0 1px rgba(245, 158, 11, 0.3),
+      0 0 24px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 12px 48px rgba(245, 158, 11, 0.5),
+      0 0 0 2px rgba(245, 158, 11, 0.5),
+      0 0 36px rgba(245, 158, 11, 0.4);
+  }
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes hex-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes network-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Glass Morphism Effects */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Quantum-inspired Particle Effects */
+.particle-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(66, 153, 225, 0.6);
+  border-radius: 50%;
+  animation: float-particle 8s linear infinite;
+}
+
+.particle:nth-child(2) { animation-delay: -2s; left: 20%; }
+.particle:nth-child(3) { animation-delay: -4s; left: 40%; }
+.particle:nth-child(4) { animation-delay: -6s; left: 60%; }
+.particle:nth-child(5) { animation-delay: -8s; left: 80%; }
+
+@keyframes float-particle {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Dark Mode Enhancements */
+@media (prefers-color-scheme: dark) {
+  .wallet-connected {
+    background: linear-gradient(
+      145deg,
+      rgba(2, 6, 23, 0.95) 0%,
+      rgba(15, 23, 42, 0.9) 50%,
+      rgba(2, 6, 23, 0.95) 100%
+    );
+  }
+  
+  .wallet-address {
+    background: linear-gradient(
+      145deg,
+      rgba(15, 23, 42, 0.9) 0%,
+      rgba(30, 41, 59, 0.7) 50%,
+      rgba(15, 23, 42, 0.9) 100%
+    );
+  }
+  
+  .connection-details {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+  }
 }

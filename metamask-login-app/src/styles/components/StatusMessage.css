@@ -1,0 +1,184 @@
+/* Status Message Component */
+.status-message {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border-radius: var(--border-radius-md);
+  margin: var(--space-md) 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--box-shadow-sm);
+}
+
+.status-message::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.status-message__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-message__text {
+  flex: 1;
+  line-height: var(--line-height-tight);
+}
+
+/* Success Messages */
+.status-message--success {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(16, 185, 129, 0.05)
+  );
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-message--success .status-message__icon {
+  color: #10b981;
+}
+
+/* Error Messages */
+.status-message--error {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.15),
+    rgba(239, 68, 68, 0.05)
+  );
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.status-message--error .status-message__icon {
+  color: #ef4444;
+}
+
+/* Warning Messages */
+.status-message--warning {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.15),
+    rgba(245, 158, 11, 0.05)
+  );
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.status-message--warning .status-message__icon {
+  color: #f59e0b;
+}
+
+/* Info Messages */
+.status-message--info {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.15),
+    rgba(59, 130, 246, 0.05)
+  );
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.status-message--info .status-message__icon {
+  color: #3b82f6;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse animation for loading states */
+.status-message--info.loading {
+  animation: slideIn 0.3s ease-out, pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .status-message {
+    backdrop-filter: blur(12px);
+  }
+
+  .status-message--success {
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.2),
+      rgba(16, 185, 129, 0.08)
+    );
+  }
+
+  .status-message--error {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.2),
+      rgba(239, 68, 68, 0.08)
+    );
+  }
+
+  .status-message--warning {
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.2),
+      rgba(245, 158, 11, 0.08)
+    );
+  }
+
+  .status-message--info {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(59, 130, 246, 0.08)
+    );
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .status-message {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-xs);
+  }
+
+  .status-message__icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .status-message__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}

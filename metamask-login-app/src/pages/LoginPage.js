@@ -2,21 +2,23 @@ import React, { useState, useEffect } from "react";
 import BrandLogo from "../components/BrandLogo";
 import NetworkIndicator from "../components/NetworkIndicator";
 import WalletConnect from "../components/WalletConnect";
+import StatusMessage from "../components/StatusMessage";
 import "../styles/components/LoginCard.css";
 import "../styles/global.css";
-import api from "../utils/api"; // Import the configured API instance
+import api from "../utils/api";
 
 const LoginPage = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [networkId, setNetworkId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [authStatus, setAuthStatus] = useState("idle"); // idle, connecting, signing, authenticated
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
-  // Add the missing handleApiError function
+  // Enhanced error handling with better user messages
   const handleApiError = (error, defaultMessage) => {
     if (error.response) {
-      // Server responded with error status
       const status = error.response.status;
       const serverMessage =
         error.response.data?.error || error.response.data?.message;
@@ -38,12 +40,18 @@ const LoginPage = () => {
           return serverMessage || defaultMessage;
       }
     } else if (error.request) {
-      // Network error - no response received
       return "Network error. Please check your internet connection.";
     } else {
-      // Something else happened
       console.error("Error:", error.message);
       return defaultMessage;
+    }
+  };
+
+  // Set message with auto-clear functionality
+  const setStatusMessage = (text, type = "error", duration = 5000) => {
+    setMessage({ text, type });
+    if (duration > 0) {
+      setTimeout(() => setMessage({ text: "", type: "" }), duration);
     }
   };
 
@@ -58,11 +66,16 @@ const LoginPage = () => {
   useEffect(() => {
     const checkConnection = async () => {
       if (!isMetaMaskAvailable()) {
-        // Remove console.log - handle silently or show UI indicator
+        setStatusMessage(
+          "MetaMask not detected. Please install MetaMask to continue.",
+          "warning",
+          0
+        );
         return;
       }
 
       try {
+        // Check chain
         try {
           const chainId = await window.ethereum.request({
             method: "eth_chainId",
@@ -72,6 +85,7 @@ const LoginPage = () => {
           console.warn("Could not get chain ID:", chainError);
         }
 
+        // Check existing connection
         try {
           const accounts = await window.ethereum.request({
             method: "eth_accounts",
@@ -79,6 +93,8 @@ const LoginPage = () => {
           if (accounts.length > 0) {
             setWalletAddress(accounts[0]);
             setIsConnected(true);
+            setAuthStatus("connected");
+            setStatusMessage("Wallet connected successfully!", "success", 3000);
           }
         } catch (accountsError) {
           console.warn("Could not get accounts:", accountsError);
@@ -90,29 +106,32 @@ const LoginPage = () => {
 
     checkConnection();
 
+    // Event listeners for MetaMask changes
     if (window.ethereum) {
       const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
           setWalletAddress(accounts[0]);
           setIsConnected(true);
+          setAuthStatus("connected");
+          setStatusMessage("Account switched successfully!", "success", 3000);
         } else {
           setWalletAddress("");
           setIsConnected(false);
+          setAuthStatus("idle");
+          setStatusMessage("Wallet disconnected", "info", 3000);
         }
       };
 
       const handleChainChanged = (chainId) => {
         setNetworkId(parseInt(chainId, 16));
+        setStatusMessage("Network changed", "info", 2000);
       };
 
       window.ethereum.on("accountsChanged", handleAccountsChanged);
       window.ethereum.on("chainChanged", handleChainChanged);
 
       return () => {
-        window.ethereum.removeListener(
-          "accountsChanged",
-          handleAccountsChanged
-        );
+        window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
         window.ethereum.removeListener("chainChanged", handleChainChanged);
       };
     }
@@ -120,14 +139,19 @@ const LoginPage = () => {
 
   const connectWallet = async () => {
     if (!window.ethereum) {
-      setErrorMessage("MetaMask is not installed! Please install it first.");
+      setStatusMessage(
+        "MetaMask is not installed! Please install it first.",
+        "error"
+      );
       return;
     }
 
     setIsLoading(true);
-    setErrorMessage("");
+    setAuthStatus("connecting");
+    setMessage({ text: "", type: "" });
 
     try {
+      // Step 1: Request account access
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
@@ -135,21 +159,32 @@ const LoginPage = () => {
       setWalletAddress(accounts[0]);
       setIsConnected(true);
 
+      // Get network info
       const chainId = await window.ethereum.request({ method: "eth_chainId" });
       setNetworkId(parseInt(chainId, 16));
 
+      setAuthStatus("signing");
+      setStatusMessage("Please sign the message in MetaMask...", "info", 0);
+
       try {
+        // Step 2: Get nonce from server
         const userResponse = await api.post("/users/find-or-create", {
           publicAddress: accounts[0],
         });
 
         const nonce = userResponse.data.nonce;
         const message = `Sign this message to confirm your identity: ${nonce}`;
+
+        // Step 3: Sign message
         const signature = await window.ethereum.request({
           method: "personal_sign",
           params: [message, accounts[0]],
         });
 
+        setAuthStatus("authenticating");
+        setStatusMessage("Verifying signature...", "info", 0);
+
+        // Step 4: Authenticate with server
         const authResponse = await api.post("/auth/authenticate", {
           publicAddress: accounts[0],
           signature,
@@ -159,21 +194,31 @@ const LoginPage = () => {
           localStorage.setItem("accessToken", authResponse.data.accessToken);
           localStorage.setItem("refreshToken", authResponse.data.refreshToken);
 
-          // Replace console.log with proper success handling
-          setErrorMessage(""); // Clear any errors
-          // Optional: Redirect to dashboard or show success message
-          // window.location.href = '/dashboard';
+          setAuthStatus("authenticated");
+          setShowSuccessAnimation(true);
+          setStatusMessage("Successfully authenticated! Welcome!", "success", 0);
+
+          // Hide success animation after 3 seconds
+          setTimeout(() => setShowSuccessAnimation(false), 3000);
         }
       } catch (authError) {
         const errorMessage = handleApiError(authError, "Authentication failed");
-        setErrorMessage(errorMessage);
+        setStatusMessage(errorMessage, "error");
+        setAuthStatus("connected");
       }
     } catch (error) {
       if (error.code === 4001) {
-        setErrorMessage("Please connect your wallet to continue");
+        setStatusMessage("Please connect your wallet to continue", "warning");
+      } else if (error.code === -32002) {
+        setStatusMessage(
+          "Request already pending. Please check MetaMask.",
+          "warning"
+        );
       } else {
-        setErrorMessage("Error connecting to MetaMask. Please try again.");
+        setStatusMessage("Error connecting to MetaMask. Please try again.", "error");
       }
+      setAuthStatus("idle");
+      setIsConnected(false);
     } finally {
       setIsLoading(false);
     }
@@ -186,38 +231,57 @@ const LoginPage = () => {
     )}`;
   };
 
-  const copyWalletAddress = () => {
+  const copyWalletAddress = async () => {
     if (walletAddress) {
-      navigator.clipboard.writeText(walletAddress);
-      alert("Wallet address copied to clipboard!");
+      try {
+        await navigator.clipboard.writeText(walletAddress);
+        setStatusMessage("Address copied to clipboard!", "success", 2000);
+      } catch (error) {
+        setStatusMessage("Failed to copy address", "error", 2000);
+      }
     }
   };
 
-  // Replace placeholder click handler with proper implementation
   const handleSignUp = () => {
-    // Option 1: Navigate to sign up page
-    // window.location.href = '/signup';
-
-    // Option 2: Show modal
-    // setShowSignUpModal(true);
-
-    // Option 3: For now, show informative message
-    setErrorMessage("Sign up functionality coming soon!");
+    setStatusMessage("Sign up functionality coming soon!", "info", 3000);
   };
 
   return (
     <div className="app">
       <div className="bg-animation"></div>
       <div className="blockchain-pattern"></div>
+      
+      {showSuccessAnimation && (
+        <div className="success-overlay">
+          <div className="success-animation">
+            <div className="checkmark-circle">
+              <svg className="checkmark" viewBox="0 0 24 24">
+                <path
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12l2 2 4-4"
+                />
+              </svg>
+            </div>
+            <h3>Authentication Successful!</h3>
+          </div>
+        </div>
+      )}
+
       <main>
         <BrandLogo />
 
         <div className="login-card">
           <NetworkIndicator networkId={networkId} />
 
-          <h2 className="card-title">Connect Your Wallet</h2>
+          <h2 className="card-title">
+            {authStatus === "authenticated" ? "Welcome Back!" : "Connect Your Wallet"}
+          </h2>
 
-          {errorMessage && <div className="error-message">{errorMessage}</div>}
+          <StatusMessage message={message} />
 
           <WalletConnect
             connectWallet={connectWallet}
@@ -225,7 +289,30 @@ const LoginPage = () => {
             walletAddress={formatAddress(walletAddress)}
             copyWalletAddress={copyWalletAddress}
             isLoading={isLoading}
+            authStatus={authStatus}
           />
+
+          {authStatus === "authenticated" && (
+            <div className="auth-success">
+              <div className="success-icon">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                  <circle cx="12" cy="12" r="10" fill="#10B981" />
+                  <path
+                    d="M9 12l2 2 4-4"
+                    stroke="white"
+                    strokeWidth="2"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <div className="success-content">
+                <h3>You're all set!</h3>
+                <p>Your wallet is connected and authenticated.</p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="login-footer">
