@@ -79,9 +79,7 @@ export const isTokenExpired = (token) => {
     const currentTime = Date.now() / 1000;
 
     // Check if token expires within the threshold
-    return (
-      payload.exp < currentTime + API_CONFIG.tokenRefreshThreshold / 1000
-    );
+    return payload.exp < currentTime + API_CONFIG.tokenRefreshThreshold / 1000;
   } catch (error) {
     console.error("Error checking token expiry:", error);
     return true;

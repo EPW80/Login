@@ -52,8 +52,7 @@ body {
   left: -50%;
   right: -50%;
   bottom: -50%;
-  background: 
-    radial-gradient(
+  background: radial-gradient(
       circle at 20% 35%,
       rgba(66, 153, 225, 0.15) 0%,
       transparent 50%
@@ -80,20 +79,20 @@ body {
   right: 0;
   bottom: 0;
   background: 
-    /* Hexagonal mesh */
-    radial-gradient(
-      circle,
-      rgba(66, 153, 225, 0.1) 1px,
-      transparent 1px
-    ) 0 0 / 30px 30px,
+    /* Hexagonal mesh */ radial-gradient(
+        circle,
+        rgba(66, 153, 225, 0.1) 1px,
+        transparent 1px
+      )
+      0 0 / 30px 30px,
     /* Circuit lines */
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 29px,
-      rgba(66, 153, 225, 0.05) 29px,
-      rgba(66, 153, 225, 0.05) 31px
-    ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 29px,
+        rgba(66, 153, 225, 0.05) 29px,
+        rgba(66, 153, 225, 0.05) 31px
+      ),
     repeating-linear-gradient(
       0deg,
       transparent,
@@ -102,11 +101,12 @@ body {
       rgba(139, 92, 246, 0.03) 31px
     ),
     /* Quantum dots */
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(16, 185, 129, 0.08) 0%,
-      transparent 2px
-    ) 15px 15px / 60px 60px;
+      radial-gradient(
+        circle at 50% 50%,
+        rgba(16, 185, 129, 0.08) 0%,
+        transparent 2px
+      )
+      15px 15px / 60px 60px;
   z-index: var(--z-background);
   opacity: 0.4;
   animation: quantum-pulse 8s ease-in-out infinite;
@@ -217,8 +217,7 @@ main {
   font-size: var(--font-size-sm);
   text-align: center;
   backdrop-filter: blur(8px);
-  box-shadow: 
-    0 4px 16px rgba(220, 38, 38, 0.2),
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   animation: error-glow 2s ease-in-out infinite alternate;
 }
@@ -238,8 +237,7 @@ main {
   font-size: var(--font-size-sm);
   text-align: center;
   backdrop-filter: blur(8px);
-  box-shadow: 
-    0 4px 16px rgba(16, 185, 129, 0.2),
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -315,8 +313,7 @@ main {
   border-top: 4px solid #4299e1;
   border-radius: 50%;
   animation: loading-spin 1s linear infinite;
-  box-shadow: 
-    0 0 20px rgba(66, 153, 225, 0.3),
+  box-shadow: 0 0 20px rgba(66, 153, 225, 0.3),
     inset 0 0 20px rgba(66, 153, 225, 0.1);
 }
 
@@ -334,7 +331,8 @@ main {
 }
 
 @keyframes quantum-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
@@ -345,7 +343,8 @@ main {
 }
 
 @keyframes float-hex-1 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg) scale(1);
   }
   33% {
@@ -357,7 +356,8 @@ main {
 }
 
 @keyframes float-hex-2 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg) scale(1);
   }
   50% {
@@ -385,20 +385,22 @@ main {
 
 @keyframes error-glow {
   0% {
-    box-shadow: 
-      0 4px 16px rgba(220, 38, 38, 0.2),
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
   100% {
-    box-shadow: 
-      0 6px 24px rgba(220, 38, 38, 0.3),
+    box-shadow: 0 6px 24px rgba(220, 38, 38, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 }
 
 @keyframes loading-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Accessibility Enhancements */
@@ -413,11 +415,11 @@ main {
   .btn-wallet {
     border: 2px solid currentColor;
   }
-  
+
   .wallet-connected {
     border: 2px solid #10b981;
   }
-  
+
   .error-message {
     border: 2px solid #dc2626;
   }
@@ -428,22 +430,22 @@ main {
   .app {
     padding: var(--space-sm);
   }
-  
+
   .login-card {
     padding: var(--space-lg);
     max-width: 100%;
     margin: var(--space-md);
   }
-  
+
   .brand-name {
     font-size: var(--font-size-xl);
   }
-  
+
   .logo {
     width: 60px;
     height: 60px;
   }
-  
+
   .geometric-elements::before,
   .geometric-elements::after {
     display: none;
@@ -455,11 +457,11 @@ main {
     padding: var(--space-sm) var(--space-md);
     font-size: var(--font-size-sm);
   }
-  
+
   .wallet-options {
     gap: var(--space-sm);
   }
-  
+
   .data-stream::before,
   .data-stream::after {
     display: none;
@@ -477,13 +479,13 @@ main {
   .loading-spinner {
     animation: none;
   }
-  
+
   .btn-wallet:hover,
   .wallet-address:hover,
   .signup-link:hover {
     transform: none;
   }
-  
+
   .error-message {
     animation: none;
   }
@@ -497,7 +499,7 @@ main {
   .data-stream {
     display: none;
   }
-  
+
   body {
     background: white;
     color: black;

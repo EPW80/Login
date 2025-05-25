@@ -97,7 +97,7 @@ mongoose
   .then(() => console.log("MongoDB connected to:", dbUri.split("@").pop())) // Show only host part for security
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Add to server.js - validate JWT configuration at startup
+// JWT configuration validation
 const validateJwtConfig = () => {
   if (!process.env.JWT_SECRET) {
     console.error("❌ JWT_SECRET environment variable is required");
@@ -162,6 +162,6 @@ validateJwtConfig();
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// At the end of server.js, before starting the server
-const errorHandler = require('./middleware/errorHandler');
+// Error handling middleware
+const errorHandler = require("./middleware/errorHandler");
 app.use(errorHandler);

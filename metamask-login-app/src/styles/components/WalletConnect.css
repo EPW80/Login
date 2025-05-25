@@ -12,9 +12,16 @@
   left: -20px;
   right: -20px;
   bottom: -20px;
-  background: 
-    radial-gradient(circle at 25% 25%, rgba(66, 153, 225, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(128, 90, 213, 0.1) 0%, transparent 50%);
+  background: radial-gradient(
+      circle at 25% 25%,
+      rgba(66, 153, 225, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(128, 90, 213, 0.1) 0%,
+      transparent 50%
+    );
   border-radius: var(--border-radius-xl);
   z-index: -1;
   opacity: 0;
@@ -39,23 +46,20 @@
   overflow: hidden;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  
+
   /* 3D Box Shadow */
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(66, 153, 225, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(66, 153, 225, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+
   /* Hexagonal clip path for blockchain aesthetic */
   clip-path: polygon(
-    10px 0%, 
-    calc(100% - 10px) 0%, 
-    100% 10px, 
-    100% calc(100% - 10px), 
-    calc(100% - 10px) 100%, 
-    10px 100%, 
-    0% calc(100% - 10px), 
+    10px 0%,
+    calc(100% - 10px) 0%,
+    100% 10px,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0% calc(100% - 10px),
     0% 10px
   );
 }
@@ -63,20 +67,15 @@
 /* 3D Hover Effects */
 .btn-wallet:hover:not(:disabled) {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 
-    0 16px 48px rgba(0, 0, 0, 0.4),
-    0 0 0 2px rgba(66, 153, 225, 0.4),
-    0 0 32px rgba(66, 153, 225, 0.3),
-    inset 0 2px 0 rgba(255, 255, 255, 0.15),
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(66, 153, 225, 0.4),
+    0 0 32px rgba(66, 153, 225, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.15),
     inset 0 -2px 0 rgba(0, 0, 0, 0.3);
   background: linear-gradient(145deg, #2563eb 0%, #3b82f6 50%, #1e40af 100%);
 }
 
 .btn-wallet:active:not(:disabled) {
   transform: translateY(-1px) scale(1.01);
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(66, 153, 225, 0.3),
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(66, 153, 225, 0.3),
     inset 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -88,9 +87,20 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    linear-gradient(90deg, transparent 48%, rgba(66, 153, 225, 0.1) 49%, rgba(66, 153, 225, 0.1) 51%, transparent 52%),
-    linear-gradient(0deg, transparent 48%, rgba(66, 153, 225, 0.1) 49%, rgba(66, 153, 225, 0.1) 51%, transparent 52%);
+  background: linear-gradient(
+      90deg,
+      transparent 48%,
+      rgba(66, 153, 225, 0.1) 49%,
+      rgba(66, 153, 225, 0.1) 51%,
+      transparent 52%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 48%,
+      rgba(66, 153, 225, 0.1) 49%,
+      rgba(66, 153, 225, 0.1) 51%,
+      transparent 52%
+    );
   background-size: 20px 20px;
   opacity: 0;
   transition: opacity var(--transition-normal);
@@ -136,10 +146,8 @@
 
 .btn-wallet--connected {
   background: linear-gradient(145deg, #065f46 0%, #059669 50%, #064e3b 100%);
-  box-shadow: 
-    0 8px 32px rgba(16, 185, 129, 0.3),
-    0 0 0 1px rgba(16, 185, 129, 0.3),
-    0 0 24px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3),
+    0 0 0 1px rgba(16, 185, 129, 0.3), 0 0 24px rgba(16, 185, 129, 0.2);
 }
 
 .btn-wallet--success {
@@ -166,10 +174,10 @@
   border-top: 3px solid #4299e1;
   border-right: 3px solid #63b3ed;
   border-radius: 50%;
-  animation: blockchain-spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  animation: blockchain-spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)
+    infinite;
   margin-right: var(--space-sm);
-  box-shadow: 
-    0 0 0 2px rgba(66, 153, 225, 0.1),
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1),
     0 0 16px rgba(66, 153, 225, 0.3);
 }
 
@@ -181,9 +189,7 @@
   background: radial-gradient(circle, #fbbf24 0%, #f59e0b 100%);
   border-radius: 50%;
   margin-right: var(--space-sm);
-  box-shadow: 
-    0 0 8px rgba(251, 191, 36, 0.6),
-    0 0 16px rgba(251, 191, 36, 0.3);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.6), 0 0 16px rgba(251, 191, 36, 0.3);
   animation: neon-pulse 1.5s ease-in-out infinite;
 }
 
@@ -202,23 +208,18 @@
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(12px);
-  
+
   /* 3D Effect */
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(16, 185, 129, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(16, 185, 129, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+
   transition: all var(--transition-normal);
 }
 
 .wallet-connected--authenticated {
   border-color: rgba(16, 185, 129, 0.5);
-  box-shadow: 
-    0 16px 48px rgba(16, 185, 129, 0.2),
-    0 0 0 2px rgba(16, 185, 129, 0.3),
-    0 0 32px rgba(16, 185, 129, 0.15),
+  box-shadow: 0 16px 48px rgba(16, 185, 129, 0.2),
+    0 0 0 2px rgba(16, 185, 129, 0.3), 0 0 32px rgba(16, 185, 129, 0.15),
     inset 0 2px 0 rgba(255, 255, 255, 0.08);
 }
 
@@ -230,8 +231,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 2px 2px, rgba(16, 185, 129, 0.15) 1px, transparent 0);
+  background: radial-gradient(
+    circle at 2px 2px,
+    rgba(16, 185, 129, 0.15) 1px,
+    transparent 0
+  );
   background-size: 24px 24px;
   animation: matrix-flow 20s linear infinite;
   opacity: 0.3;
@@ -260,9 +264,7 @@
   background: radial-gradient(circle, #10b981 0%, #059669 100%);
   border-radius: 50%;
   position: relative;
-  box-shadow: 
-    0 0 8px rgba(16, 185, 129, 0.6),
-    0 0 16px rgba(16, 185, 129, 0.3),
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6), 0 0 16px rgba(16, 185, 129, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   animation: status-pulse 2s ease-in-out infinite;
 }
@@ -306,13 +308,11 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* 3D Inset Effect */
-  box-shadow: 
-    inset 0 2px 8px rgba(0, 0, 0, 0.3),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
-    0 1px 3px rgba(0, 0, 0, 0.2);
-  
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.2);
+
   border: 1px solid rgba(100, 116, 139, 0.2);
 }
 
@@ -325,10 +325,8 @@
   );
   border-color: rgba(16, 185, 129, 0.4);
   transform: translateY(-2px);
-  box-shadow: 
-    inset 0 2px 8px rgba(0, 0, 0, 0.2),
-    0 4px 16px rgba(16, 185, 129, 0.2),
-    0 0 24px rgba(16, 185, 129, 0.1);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(16, 185, 129, 0.2), 0 0 24px rgba(16, 185, 129, 0.1);
 }
 
 /* Holographic Address Text */
@@ -369,74 +367,103 @@
 
 /* Advanced Animations */
 @keyframes circuit-flow {
-  0% { background-position: 0 0; }
-  100% { background-position: 20px 20px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 20px 20px;
+  }
 }
 
 @keyframes blockchain-spin {
-  0% { transform: rotate(0deg); border-top-color: #4299e1; }
-  25% { border-right-color: #4299e1; border-top-color: rgba(255, 255, 255, 0.2); }
-  50% { transform: rotate(180deg); border-bottom-color: #4299e1; border-right-color: rgba(255, 255, 255, 0.2); }
-  75% { border-left-color: #4299e1; border-bottom-color: rgba(255, 255, 255, 0.2); }
-  100% { transform: rotate(360deg); border-top-color: #4299e1; border-left-color: rgba(255, 255, 255, 0.2); }
+  0% {
+    transform: rotate(0deg);
+    border-top-color: #4299e1;
+  }
+  25% {
+    border-right-color: #4299e1;
+    border-top-color: rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    transform: rotate(180deg);
+    border-bottom-color: #4299e1;
+    border-right-color: rgba(255, 255, 255, 0.2);
+  }
+  75% {
+    border-left-color: #4299e1;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    transform: rotate(360deg);
+    border-top-color: #4299e1;
+    border-left-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
 @keyframes neon-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
-    box-shadow: 
-      0 0 8px rgba(251, 191, 36, 0.6),
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.6),
       0 0 16px rgba(251, 191, 36, 0.3);
   }
   50% {
     transform: scale(1.2);
-    box-shadow: 
-      0 0 16px rgba(251, 191, 36, 0.8),
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.8),
       0 0 32px rgba(251, 191, 36, 0.4);
   }
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.3),
-      0 0 0 1px rgba(66, 153, 225, 0.2);
+  0%,
+  100% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(66, 153, 225, 0.2);
   }
   50% {
-    box-shadow: 
-      0 12px 48px rgba(59, 130, 246, 0.4),
-      0 0 0 2px rgba(66, 153, 225, 0.4),
-      0 0 32px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 12px 48px rgba(59, 130, 246, 0.4),
+      0 0 0 2px rgba(66, 153, 225, 0.4), 0 0 32px rgba(59, 130, 246, 0.3);
   }
 }
 
 @keyframes success-celebration {
-  0%, 100% { transform: scale(1); }
-  10% { transform: scale(1.05); }
-  20% { transform: scale(1); }
-  30% { transform: scale(1.02); }
-  40% { transform: scale(1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.05);
+  }
+  20% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.02);
+  }
+  40% {
+    transform: scale(1);
+  }
 }
 
 @keyframes matrix-flow {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(24px); }
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(24px);
+  }
 }
 
 @keyframes status-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
-    box-shadow: 
-      0 0 8px rgba(16, 185, 129, 0.6),
-      0 0 16px rgba(16, 185, 129, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6),
+      0 0 16px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   50% {
     transform: scale(1.1);
-    box-shadow: 
-      0 0 12px rgba(16, 185, 129, 0.8),
-      0 0 24px rgba(16, 185, 129, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.8),
+      0 0 24px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
 }
 
@@ -468,15 +495,15 @@
     padding: var(--space-md) var(--space-lg);
     font-size: var(--font-size-base);
   }
-  
+
   .wallet-connected {
     padding: var(--space-md);
   }
-  
+
   .wallet-address {
     padding: var(--space-sm) var(--space-md);
   }
-  
+
   .address-text {
     font-size: var(--font-size-xs);
   }
@@ -491,12 +518,12 @@
   .wallet-connected::before {
     animation: none;
   }
-  
+
   .btn-wallet:hover,
   .wallet-address:hover {
     transform: none;
   }
-  
+
   .btn-wallet::after {
     display: none;
   }
@@ -561,16 +588,14 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   z-index: 1000;
-  
+
   /* 3D Effect */
-  box-shadow: 
-    0 8px 32px rgba(16, 185, 129, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
   /* Slide in animation */
   animation: slide-in-right 0.3s ease-out, fade-out 0.3s ease-in 1.7s forwards;
-  
+
   /* Backdrop blur for modern look */
   backdrop-filter: blur(12px);
 }
@@ -584,17 +609,14 @@
 /* Enhanced Button States */
 .btn-wallet--signing {
   background: linear-gradient(145deg, #f59e0b 0%, #d97706 50%, #92400e 100%);
-  box-shadow: 
-    0 8px 32px rgba(245, 158, 11, 0.3),
-    0 0 0 1px rgba(245, 158, 11, 0.3),
-    0 0 24px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3),
+    0 0 0 1px rgba(245, 158, 11, 0.3), 0 0 24px rgba(245, 158, 11, 0.2);
   animation: signing-pulse 2s ease-in-out infinite;
 }
 
 .btn-wallet--error {
   background: linear-gradient(145deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
-  box-shadow: 
-    0 8px 32px rgba(220, 38, 38, 0.3),
+  box-shadow: 0 8px 32px rgba(220, 38, 38, 0.3),
     0 0 0 1px rgba(220, 38, 38, 0.3);
   animation: error-shake 0.5s ease-in-out;
 }
@@ -603,17 +625,14 @@
 .spinner--signing {
   border-top-color: #f59e0b;
   border-right-color: #fbbf24;
-  box-shadow: 
-    0 0 0 2px rgba(245, 158, 11, 0.1),
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1),
     0 0 12px rgba(245, 158, 11, 0.3);
 }
 
 .spinner--error {
   border-top-color: #dc2626;
   border-right-color: #f87171;
-  box-shadow: 
-    0 0 0 2px rgba(220, 38, 38, 0.1),
-    0 0 12px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1), 0 0 12px rgba(220, 38, 38, 0.3);
 }
 
 /* Blockchain-inspired Hexagonal Elements */
@@ -688,34 +707,47 @@
 }
 
 @keyframes signing-pulse {
-  0%, 100% {
-    box-shadow: 
-      0 8px 32px rgba(245, 158, 11, 0.3),
-      0 0 0 1px rgba(245, 158, 11, 0.3),
-      0 0 24px rgba(245, 158, 11, 0.2);
+  0%,
+  100% {
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3),
+      0 0 0 1px rgba(245, 158, 11, 0.3), 0 0 24px rgba(245, 158, 11, 0.2);
   }
   50% {
-    box-shadow: 
-      0 12px 48px rgba(245, 158, 11, 0.5),
-      0 0 0 2px rgba(245, 158, 11, 0.5),
-      0 0 36px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 12px 48px rgba(245, 158, 11, 0.5),
+      0 0 0 2px rgba(245, 158, 11, 0.5), 0 0 36px rgba(245, 158, 11, 0.4);
   }
 }
 
 @keyframes error-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
 
 @keyframes hex-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes network-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 /* Glass Morphism Effects */
@@ -723,8 +755,7 @@
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -748,10 +779,22 @@
   animation: float-particle 8s linear infinite;
 }
 
-.particle:nth-child(2) { animation-delay: -2s; left: 20%; }
-.particle:nth-child(3) { animation-delay: -4s; left: 40%; }
-.particle:nth-child(4) { animation-delay: -6s; left: 60%; }
-.particle:nth-child(5) { animation-delay: -8s; left: 80%; }
+.particle:nth-child(2) {
+  animation-delay: -2s;
+  left: 20%;
+}
+.particle:nth-child(3) {
+  animation-delay: -4s;
+  left: 40%;
+}
+.particle:nth-child(4) {
+  animation-delay: -6s;
+  left: 60%;
+}
+.particle:nth-child(5) {
+  animation-delay: -8s;
+  left: 80%;
+}
 
 @keyframes float-particle {
   0% {
@@ -780,7 +823,7 @@
       rgba(2, 6, 23, 0.95) 100%
     );
   }
-  
+
   .wallet-address {
     background: linear-gradient(
       145deg,
@@ -789,7 +832,7 @@
       rgba(15, 23, 42, 0.9) 100%
     );
   }
-  
+
   .connection-details {
     background: linear-gradient(
       135deg,

@@ -16,17 +16,19 @@ api.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
-    
+
     // Add request ID for debugging
     if (API_CONFIG.isDevelopment) {
-      config.headers["X-Request-ID"] = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      config.headers["X-Request-ID"] = `req_${Date.now()}_${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
     }
-    
+
     return config;
   },
   (error) => {
     if (API_CONFIG.isDevelopment) {
-      console.error('Request interceptor error:', error);
+      console.error("Request interceptor error:", error);
     }
     return Promise.reject(error);
   }
@@ -37,22 +39,30 @@ api.interceptors.response.use(
   (response) => {
     // Log successful requests in development
     if (API_CONFIG.isDevelopment) {
-      console.log(`✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`);
+      console.log(
+        `✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${
+          response.status
+        }`
+      );
     }
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
-    
+
     // Log errors in development
     if (API_CONFIG.isDevelopment) {
-      console.error(`❌ ${originalRequest?.method?.toUpperCase()} ${originalRequest?.url} - ${error.response?.status || 'Network Error'}`);
+      console.error(
+        `❌ ${originalRequest?.method?.toUpperCase()} ${
+          originalRequest?.url
+        } - ${error.response?.status || "Network Error"}`
+      );
     }
-    
+
     // Handle 401 errors with token refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
       try {
         const newToken = await refreshAccessToken();
         if (newToken) {
@@ -60,33 +70,36 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError);
+        console.error("Token refresh failed:", refreshError);
         // Clear tokens and redirect to login
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        
+
         // Optional: Redirect to login page
-        if (typeof window !== 'undefined' && window.location) {
-          window.location.href = '/login';
+        if (typeof window !== "undefined" && window.location) {
+          window.location.href = "/login";
         }
       }
     }
-    
+
     // Retry logic for network errors
     if (!error.response && originalRequest._retryCount < API_CONFIG.retries) {
       originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
-      
+
       // Exponential backoff
-      const delay = API_CONFIG.retryDelay * Math.pow(2, originalRequest._retryCount - 1);
-      
+      const delay =
+        API_CONFIG.retryDelay * Math.pow(2, originalRequest._retryCount - 1);
+
       if (API_CONFIG.isDevelopment) {
-        console.log(`Retrying request (${originalRequest._retryCount}/${API_CONFIG.retries}) after ${delay}ms`);
+        console.log(
+          `Retrying request (${originalRequest._retryCount}/${API_CONFIG.retries}) after ${delay}ms`
+        );
       }
-      
-      await new Promise(resolve => setTimeout(resolve, delay));
+
+      await new Promise((resolve) => setTimeout(resolve, delay));
       return api(originalRequest);
     }
-    
+
     return Promise.reject(error);
   }
 );

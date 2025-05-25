@@ -8,7 +8,6 @@ import "../styles/global.css";
 import api from "../utils/api";
 import API_CONFIG from "../config/apiConfig";
 
-
 const LoginPage = () => {
   const [message, setMessage] = useState({ text: "", type: "" });
   const [isConnected, setIsConnected] = useState(false);
@@ -133,7 +132,10 @@ const LoginPage = () => {
       window.ethereum.on("chainChanged", handleChainChanged);
 
       return () => {
-        window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+        window.ethereum.removeListener(
+          "accountsChanged",
+          handleAccountsChanged
+        );
         window.ethereum.removeListener("chainChanged", handleChainChanged);
       };
     }
@@ -170,31 +172,41 @@ const LoginPage = () => {
 
       try {
         // Use centralized endpoint configuration
-        const userResponse = await api.post(API_CONFIG.endpoints.users.findOrCreate, {
-          publicAddress: accounts[0],
-        });
+        const userResponse = await api.post(
+          API_CONFIG.endpoints.users.findOrCreate,
+          {
+            publicAddress: accounts[0],
+          }
+        );
 
         const nonce = userResponse.data.nonce;
         const message = `Sign this message to confirm your identity: ${nonce}`;
-        
+
         const signature = await window.ethereum.request({
           method: "personal_sign",
           params: [message, accounts[0]],
         });
 
         // Use centralized endpoint configuration
-        const authResponse = await api.post(API_CONFIG.endpoints.auth.authenticate, {
-          publicAddress: accounts[0],
-          signature,
-        });
+        const authResponse = await api.post(
+          API_CONFIG.endpoints.auth.authenticate,
+          {
+            publicAddress: accounts[0],
+            signature,
+          }
+        );
 
         if (authResponse.data.accessToken) {
           localStorage.setItem("accessToken", authResponse.data.accessToken);
           localStorage.setItem("refreshToken", authResponse.data.refreshToken);
-          
+
           setAuthStatus("authenticated");
           setShowSuccessAnimation(true);
-          setStatusMessage("Successfully authenticated! Welcome!", "success", 0);
+          setStatusMessage(
+            "Successfully authenticated! Welcome!",
+            "success",
+            0
+          );
 
           // Hide success animation after 3 seconds
           setTimeout(() => setShowSuccessAnimation(false), 3000);
@@ -213,7 +225,10 @@ const LoginPage = () => {
           "warning"
         );
       } else {
-        setStatusMessage("Error connecting to MetaMask. Please try again.", "error");
+        setStatusMessage(
+          "Error connecting to MetaMask. Please try again.",
+          "error"
+        );
       }
       setAuthStatus("idle");
       setIsConnected(false);
@@ -248,7 +263,7 @@ const LoginPage = () => {
     <div className="app">
       <div className="bg-animation"></div>
       <div className="blockchain-pattern"></div>
-      
+
       {showSuccessAnimation && (
         <div className="success-overlay">
           <div className="success-animation">
@@ -276,7 +291,9 @@ const LoginPage = () => {
           <NetworkIndicator networkId={networkId} />
 
           <h2 className="card-title">
-            {authStatus === "authenticated" ? "Welcome Back!" : "Connect Your Wallet"}
+            {authStatus === "authenticated"
+              ? "Welcome Back!"
+              : "Connect Your Wallet"}
           </h2>
 
           <StatusMessage message={message} />
