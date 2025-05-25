@@ -63,6 +63,67 @@ mongoose
   .then(() => console.log("MongoDB connected to:", dbUri.split("@").pop())) // Show only host part for security
   .catch((err) => console.error("MongoDB connection error:", err));
 
+// Add to server.js - validate JWT configuration at startup
+const validateJwtConfig = () => {
+  if (!process.env.JWT_SECRET) {
+    console.error("❌ JWT_SECRET environment variable is required");
+    process.exit(1);
+  }
+
+  if (process.env.JWT_SECRET.length < 32) {
+    console.warn(
+      "⚠️ JWT_SECRET should be at least 32 characters long for security"
+    );
+  }
+
+  // Test JWT_EXPIRY parsing
+  try {
+    const getJwtExpiryInSeconds = () => {
+      // Include the same function logic here for validation
+      const expiry = process.env.JWT_EXPIRY || "1h"; // Default to 1 hour
+      const match = expiry.match(/^(\d+)([smhd])$/);
+
+      if (!match) {
+        throw new Error("Invalid JWT_EXPIRY format. Use 1h, 30m, etc.");
+      }
+
+      const value = parseInt(match[1], 10);
+      const unit = match[2];
+
+      let seconds;
+      switch (unit) {
+        case "s":
+          seconds = value;
+          break;
+        case "m":
+          seconds = value * 60;
+          break;
+        case "h":
+          seconds = value * 3600;
+          break;
+        case "d":
+          seconds = value * 86400;
+          break;
+        default:
+          throw new Error("Invalid JWT_EXPIRY unit. Use s, m, h, or d.");
+      }
+
+      return seconds;
+    };
+
+    const expirySeconds = getJwtExpiryInSeconds();
+    console.log(
+      `✅ JWT configuration valid. Token expiry: ${expirySeconds} seconds`
+    );
+  } catch (error) {
+    console.error("❌ Invalid JWT configuration:", error.message);
+    process.exit(1);
+  }
+};
+
+// Call during server initialization
+validateJwtConfig();
+
 // Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

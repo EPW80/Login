@@ -8,7 +8,7 @@ const WalletConnect = ({
   copyWalletAddress,
   isLoading,
   isAuthenticated = false,
-  connectionStatus = "disconnected", // 'disconnected', 'connecting', 'connected', 'signing', 'authenticated'
+  authStatus = "idle", // Changed from connectionStatus to authStatus
 }) => {
   const [showCopied, setShowCopied] = useState(false);
   const [buttonState, setButtonState] = useState("default");
@@ -104,7 +104,9 @@ const WalletConnect = ({
 
   // Get button content based on state
   const getButtonContent = () => {
-    switch (connectionStatus) {
+    switch (
+      authStatus // Changed from connectionStatus to authStatus
+    ) {
       case "connecting":
         return (
           <>
@@ -159,7 +161,9 @@ const WalletConnect = ({
   };
 
   const getConnectionStatusText = () => {
-    switch (connectionStatus) {
+    switch (
+      authStatus // Changed from connectionStatus to authStatus
+    ) {
       case "connecting":
         return "Connecting...";
       case "signing":
