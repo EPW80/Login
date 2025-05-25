@@ -21,8 +21,14 @@ if (missingEnvVars.length > 0) {
 
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
+
+// Import security middleware
+const {
+  generalLimiter,
+  securityHeaders,
+  speedLimiter,
+} = require("./middleware/security");
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -30,9 +36,37 @@ const userRoutes = require("./routes/users");
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
+// Apply security middleware early in the middleware stack
+app.use(securityHeaders);
+app.use(speedLimiter);
+app.use(generalLimiter); // Apply to all routes
+
+// CORS configuration
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        process.env.FRONTEND_URL,
+      ].filter(Boolean);
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+// Trust proxy for accurate IP detection (important for rate limiting)
+app.set("trust proxy", 1);
+
+// Body parsing middleware
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -127,3 +161,7 @@ validateJwtConfig();
 // Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// At the end of server.js, before starting the server
+const errorHandler = require('./middleware/errorHandler');
+app.use(errorHandler);

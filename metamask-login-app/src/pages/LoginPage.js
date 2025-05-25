@@ -6,6 +6,8 @@ import StatusMessage from "../components/StatusMessage";
 import "../styles/components/LoginCard.css";
 import "../styles/global.css";
 import api from "../utils/api";
+import API_CONFIG from "../config/apiConfig";
+
 
 const LoginPage = () => {
   const [message, setMessage] = useState({ text: "", type: "" });
@@ -167,25 +169,21 @@ const LoginPage = () => {
       setStatusMessage("Please sign the message in MetaMask...", "info", 0);
 
       try {
-        // Step 2: Get nonce from server
-        const userResponse = await api.post("/users/find-or-create", {
+        // Use centralized endpoint configuration
+        const userResponse = await api.post(API_CONFIG.endpoints.users.findOrCreate, {
           publicAddress: accounts[0],
         });
 
         const nonce = userResponse.data.nonce;
         const message = `Sign this message to confirm your identity: ${nonce}`;
-
-        // Step 3: Sign message
+        
         const signature = await window.ethereum.request({
           method: "personal_sign",
           params: [message, accounts[0]],
         });
 
-        setAuthStatus("authenticating");
-        setStatusMessage("Verifying signature...", "info", 0);
-
-        // Step 4: Authenticate with server
-        const authResponse = await api.post("/auth/authenticate", {
+        // Use centralized endpoint configuration
+        const authResponse = await api.post(API_CONFIG.endpoints.auth.authenticate, {
           publicAddress: accounts[0],
           signature,
         });
@@ -193,7 +191,7 @@ const LoginPage = () => {
         if (authResponse.data.accessToken) {
           localStorage.setItem("accessToken", authResponse.data.accessToken);
           localStorage.setItem("refreshToken", authResponse.data.refreshToken);
-
+          
           setAuthStatus("authenticated");
           setShowSuccessAnimation(true);
           setStatusMessage("Successfully authenticated! Welcome!", "success", 0);

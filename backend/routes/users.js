@@ -5,6 +5,9 @@ const User = require("../models/User");
 const { generateNonce } = require("../utils/crypto");
 const userController = require("../controllers/users");
 
+// Import rate limiters
+const { authLimiter } = require('../middleware/security');
+
 // Get or create user
 router.get("/", validateAddress, async (req, res, next) => {
   const { publicAddress } = req.query;
@@ -21,6 +24,10 @@ router.get("/", validateAddress, async (req, res, next) => {
   }
 });
 
-router.post("/find-or-create", userController.findOrCreate);
+// Apply rate limiting to user creation endpoint
+router.post("/find-or-create", 
+  authLimiter,        // Rate limit user creation attempts
+  userController.findOrCreate
+);
 
 module.exports = router;
