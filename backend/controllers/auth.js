@@ -4,13 +4,16 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { Web3 } = require("web3");
 const { generateNonce } = require("../utils/crypto");
+const Logger = require("../utils/logger");
 const {
   sanitizeEthereumAddress,
   sanitizeSignature,
 } = require("../middleware/sanitization");
 
-// Initialize Web3 with provider
-const web3 = new Web3(process.env.ETH_NODE_URL);
+// Initialize Web3 with provider (fallback to default if no provider)
+const web3 = new Web3(
+  process.env.ETH_NODE_URL || "https://mainnet.infura.io/v3/YOUR_PROJECT_ID"
+);
 
 // Helper function to parse JWT expiry and return seconds with robust validation
 const getJwtExpiryInSeconds = () => {
@@ -20,16 +23,18 @@ const getJwtExpiryInSeconds = () => {
   if (!isNaN(expiry)) {
     const numericValue = parseInt(expiry);
     if (numericValue <= 0) {
-      console.warn(
-        `Invalid JWT_EXPIRY value: ${expiry}, must be positive. Defaulting to 1 hour`
-      );
+      Logger.warn("Invalid JWT_EXPIRY value, using default", {
+        provided: expiry,
+        default: "1 hour",
+      });
       return 3600;
     }
     if (numericValue > 86400 * 30) {
-      // Max 30 days
-      console.warn(
-        `JWT_EXPIRY value too large: ${expiry}, maximum is 30 days. Defaulting to 1 hour`
-      );
+      Logger.warn("JWT_EXPIRY value too large, using default", {
+        provided: expiry,
+        maximum: "30 days",
+        default: "1 hour",
+      });
       return 3600;
     }
     return numericValue;
@@ -37,17 +42,18 @@ const getJwtExpiryInSeconds = () => {
 
   // Validate string format
   if (typeof expiry !== "string") {
-    console.warn(
-      `Invalid JWT_EXPIRY type: ${typeof expiry}, expected string or number. Defaulting to 1 hour`
-    );
+    Logger.warn("Invalid JWT_EXPIRY type, using default", {
+      type: typeof expiry,
+      expected: "string or number",
+      default: "1 hour",
+    });
     return 3600;
   }
 
-  // Remove whitespace and convert to lowercase
   const normalizedExpiry = expiry.trim().toLowerCase();
 
   if (normalizedExpiry === "") {
-    console.warn("Empty JWT_EXPIRY value, defaulting to 1 hour");
+    Logger.warn("Empty JWT_EXPIRY value, using default", { default: "1 hour" });
     return 3600;
   }
 
@@ -70,7 +76,6 @@ const getJwtExpiryInSeconds = () => {
     days: 86400,
   };
 
-  // Enhanced regex to support various formats
   const match = normalizedExpiry.match(
     /^(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days)$/
   );
@@ -79,68 +84,83 @@ const getJwtExpiryInSeconds = () => {
     const [, value, unit] = match;
     const numericValue = parseInt(value);
 
-    // Validate numeric value
     if (numericValue <= 0) {
-      console.warn(
-        `Invalid JWT_EXPIRY numeric value: ${value}, must be positive. Defaulting to 1 hour`
-      );
+      Logger.warn("Invalid JWT_EXPIRY numeric value, using default", {
+        value,
+        default: "1 hour",
+      });
       return 3600;
     }
 
     const multiplier = timeMap[unit];
     const totalSeconds = numericValue * multiplier;
 
-    // Validate reasonable limits
     if (totalSeconds < 60) {
-      // Minimum 1 minute
-      console.warn(
-        `JWT_EXPIRY too short: ${normalizedExpiry}, minimum is 1 minute. Setting to 1 minute`
-      );
+      Logger.warn("JWT_EXPIRY too short, setting to minimum", {
+        provided: normalizedExpiry,
+        minimum: "1 minute",
+      });
       return 60;
     }
 
     if (totalSeconds > 86400 * 30) {
-      // Maximum 30 days
-      console.warn(
-        `JWT_EXPIRY too long: ${normalizedExpiry}, maximum is 30 days. Defaulting to 1 hour`
-      );
+      Logger.warn("JWT_EXPIRY too long, using default", {
+        provided: normalizedExpiry,
+        maximum: "30 days",
+        default: "1 hour",
+      });
       return 3600;
     }
 
     return totalSeconds;
   }
 
-  // If parsing fails, log detailed error and use default
-  console.warn(
-    `Invalid JWT_EXPIRY format: "${expiry}". Expected formats: "1h", "30m", "7d", "3600" (seconds). Defaulting to 1 hour`
-  );
+  Logger.warn("Invalid JWT_EXPIRY format, using default", {
+    provided: expiry,
+    expectedFormats: ["1h", "30m", "7d", "3600"],
+    default: "1 hour",
+  });
   return 3600;
 };
 
 // Enhanced access token generation with validation
 const generateAccessToken = (publicAddress) => {
   if (!publicAddress) {
+    Logger.error("Access token generation failed", {
+      reason: "Missing public address",
+    });
     throw new Error("Public address is required for token generation");
   }
 
   if (!process.env.JWT_SECRET) {
+    Logger.error("Access token generation failed", { reason: "Missing JWT_SECRET" });
     throw new Error("JWT_SECRET environment variable is required");
   }
 
   const expiryInSeconds = getJwtExpiryInSeconds();
 
   try {
-    return jwt.sign(
+    const token = jwt.sign(
       {
         publicAddress,
-        iat: Math.floor(Date.now() / 1000), // Issued at time
+        iat: Math.floor(Date.now() / 1000),
         type: "access_token",
       },
       process.env.JWT_SECRET,
       { expiresIn: expiryInSeconds }
     );
+
+    Logger.info("Access token generated successfully", {
+      publicAddress,
+      expiresIn: expiryInSeconds,
+    });
+
+    return token;
   } catch (error) {
-    console.error("Error generating access token:", error);
+    Logger.error("Error generating access token", {
+      error: error.message,
+      publicAddress,
+    });
     throw new Error("Failed to generate access token");
   }
 };
@@ -148,16 +168,24 @@ const generateAccessToken = (publicAddress) => {
 // Enhanced refresh token generation with validation
 const generateRefreshToken = async (userId, publicAddress) => {
   if (!userId || !publicAddress) {
-    throw new Error(
-      "User ID and public address are required for refresh token generation"
-    );
+    Logger.error("Refresh token generation failed", {
+      reason: "Missing required parameters",
+      userId: !!userId,
+      publicAddress: !!publicAddress,
+    });
+    throw new Error("User ID and public address are required for refresh token generation");
   }
 
   try {
-    // Clean up old refresh tokens for this user (optional security measure)
-    await RefreshToken.deleteMany({
+    // Clean up old refresh tokens
+    const cleanupResult = await RefreshToken.deleteMany({
       user: userId,
       expiresAt: { $lt: new Date() },
+    });
+
+    Logger.debug("Cleaned up expired refresh tokens", {
+      userId,
+      deletedCount: cleanupResult.deletedCount,
     });
 
     // Limit number of active refresh tokens per user
@@ -167,8 +195,6 @@ const generateRefreshToken = async (userId, publicAddress) => {
     });
 
     if (activeTokensCount >= 5) {
-      // Max 5 active tokens per user
-      // Remove oldest token
       const oldestToken = await RefreshToken.findOne({
         user: userId,
         expiresAt: { $gt: new Date() },
@@ -176,12 +202,16 @@ const generateRefreshToken = async (userId, publicAddress) => {
 
       if (oldestToken) {
         await RefreshToken.deleteOne({ _id: oldestToken._id });
+        Logger.info("Removed oldest refresh token", {
+          userId,
+          tokenId: oldestToken._id,
+        });
       }
     }
 
     const token = crypto.randomBytes(40).toString("hex");
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 30); // 30 days
+    expiresAt.setDate(expiresAt.getDate() + 30);
 
     const refreshToken = new RefreshToken({
       token,
@@ -192,61 +222,254 @@ const generateRefreshToken = async (userId, publicAddress) => {
     });
 
     await refreshToken.save();
+
+    Logger.success("Refresh token generated successfully", {
+      userId,
+      publicAddress: publicAddress.toLowerCase(),
+      expiresAt,
+    });
+
     return token;
   } catch (error) {
-    console.error("Error generating refresh token:", error);
+    Logger.error("Error generating refresh token", {
+      error: error.message,
+      userId,
+      publicAddress,
+    });
     throw new Error("Failed to generate refresh token");
   }
 };
 
-// Authentication controller with refresh tokens
+// Enhanced Authentication controller with logger integration
 exports.authenticate = async (req, res, next) => {
-  try {
-    // Sanitize inputs with specific validators
-    const publicAddress = sanitizeEthereumAddress(req.body.publicAddress);
-    const signature = sanitizeSignature(req.body.signature);
+  const requestId = req.requestId || "unknown";
 
+  try {
+    Logger.info("Authentication request received", {
+      requestId,
+      ip: req.ip,
+      userAgent: req.get("User-Agent"),
+    });
+
+    const { publicAddress, signature } = req.body;
+
+    // Enhanced input validation
     if (!publicAddress || !signature) {
-      return res.status(400).json({ error: "Invalid input data" });
+      Logger.warn("Authentication failed - missing required fields", {
+        requestId,
+        publicAddress: !!publicAddress,
+        signature: !!signature,
+      });
+      return res.status(400).json({
+        error: "Public address and signature are required",
+      });
     }
 
-    // Normalize address to lowercase for consistency
-    const normalizedAddress = publicAddress.toLowerCase();
+    // Validate Ethereum address format
+    if (!/^0x[a-fA-F0-9]{40}$/.test(publicAddress)) {
+      Logger.warn("Authentication failed - invalid address format", {
+        requestId,
+        publicAddress: publicAddress.substring(0, 10) + "...",
+      });
+      return res.status(400).json({
+        error: "Invalid Ethereum address format",
+      });
+    }
 
+    // Validate signature format
+    if (!signature || typeof signature !== "string") {
+      Logger.warn("Authentication failed - invalid signature type", {
+        requestId,
+        signatureType: typeof signature,
+      });
+      return res.status(400).json({
+        error: "Invalid signature format",
+      });
+    }
+
+    if (!signature.startsWith("0x") || signature.length !== 132) {
+      Logger.warn("Authentication failed - invalid signature format", {
+        requestId,
+        startsWithOx: signature.startsWith("0x"),
+        length: signature.length,
+      });
+      return res.status(400).json({
+        error: "Signature must be a valid Ethereum signature (0x + 130 hex characters)",
+      });
+    }
+
+    // Sanitize inputs
+    let sanitizedAddress, sanitizedSignature;
+    try {
+      sanitizedAddress = sanitizeEthereumAddress(publicAddress);
+      sanitizedSignature = sanitizeSignature(signature);
+
+      Logger.debug("Input sanitization successful", {
+        requestId,
+        originalAddress: publicAddress.substring(0, 10) + "...",
+        sanitizedAddress: sanitizedAddress.substring(0, 10) + "...",
+      });
+    } catch (sanitizeError) {
+      Logger.error("Input sanitization failed", {
+        requestId,
+        error: sanitizeError.message,
+      });
+      return res.status(400).json({ error: sanitizeError.message });
+    }
+
+    if (!sanitizedAddress || !sanitizedSignature) {
+      Logger.error("Sanitization resulted in empty values", { requestId });
+      return res.status(400).json({ error: "Invalid input data after sanitization" });
+    }
+
+    const normalizedAddress = sanitizedAddress.toLowerCase();
+
+    Logger.debug("Looking up user", {
+      requestId,
+      address: normalizedAddress.substring(0, 10) + "...",
+    });
+
+    // Find user by public address
     const user = await User.findOne({ publicAddress: normalizedAddress });
     if (!user) {
-      return res.status(401).json({ error: "User not found" });
+      Logger.warn("Authentication failed - user not found", {
+        requestId,
+        address: normalizedAddress.substring(0, 10) + "...",
+      });
+      return res.status(404).json({
+        error: "User not found. Please create an account first.",
+      });
     }
 
-    // Create the message that was signed
+    Logger.info("User found for authentication", {
+      requestId,
+      userId: user._id,
+      address: user.publicAddress.substring(0, 10) + "...",
+      nonce: user.nonce,
+    });
+
+    // Create message for verification
     const message = `Sign this message to confirm your identity: ${user.nonce}`;
 
-    // Verify signature
-    try {
-      const recoveredAddress = web3.eth.accounts.recover({
-        data: message,
-        signature: signature,
-      });
+    Logger.debug("Starting signature verification", {
+      requestId,
+      messageLength: message.length,
+      signatureLength: sanitizedSignature.length,
+    });
 
-      if (recoveredAddress.toLowerCase() !== normalizedAddress) {
-        return res.status(401).json({ error: "Invalid signature" });
+    // Enhanced signature verification with multiple methods
+    try {
+      let recoveredAddress;
+      let verificationMethod;
+
+      try {
+        // Method 1: Using Web3 recover with message hash
+        recoveredAddress = web3.eth.accounts.recover({
+          messageHash: web3.utils.keccak256(
+            "\x19Ethereum Signed Message:\n" + message.length + message
+          ),
+          signature: sanitizedSignature,
+        });
+        verificationMethod = "messageHash";
+
+        Logger.debug("Signature verification method 1 successful", {
+          requestId,
+          method: verificationMethod,
+          recoveredAddress: recoveredAddress.substring(0, 10) + "...",
+        });
+      } catch (error1) {
+        Logger.debug("Method 1 failed, trying method 2", {
+          requestId,
+          error: error1.message,
+        });
+
+        try {
+          // Method 2: Using Web3 recover with plain message
+          recoveredAddress = web3.eth.accounts.recover(message, sanitizedSignature);
+          verificationMethod = "plainMessage";
+
+          Logger.debug("Signature verification method 2 successful", {
+            requestId,
+            method: verificationMethod,
+            recoveredAddress: recoveredAddress.substring(0, 10) + "...",
+          });
+        } catch (error2) {
+          Logger.debug("Method 2 failed, trying method 3", {
+            requestId,
+            error: error2.message,
+          });
+
+          // Method 3: Manual message hash creation
+          const messageHash = web3.utils.keccak256(
+            "\x19Ethereum Signed Message:\n" + message.length + message
+          );
+          recoveredAddress = web3.eth.accounts.recover({
+            messageHash: messageHash,
+            signature: sanitizedSignature,
+          });
+          verificationMethod = "manualHash";
+
+          Logger.debug("Signature verification method 3 successful", {
+            requestId,
+            method: verificationMethod,
+            recoveredAddress: recoveredAddress.substring(0, 10) + "...",
+          });
+        }
       }
-    } catch (verifyError) {
-      console.error("Verification error:", verifyError);
-      return res.status(401).json({ error: "Signature verification failed" });
+
+      // Compare addresses
+      if (recoveredAddress.toLowerCase() !== normalizedAddress) {
+        Logger.warn("Authentication failed - address mismatch", {
+          requestId,
+          expected: normalizedAddress.substring(0, 10) + "...",
+          recovered: recoveredAddress.toLowerCase().substring(0, 10) + "...",
+          verificationMethod,
+        });
+        return res.status(401).json({
+          error: "Invalid signature. Authentication failed.",
+        });
+      }
+
+      Logger.success("Signature verification successful", {
+        requestId,
+        address: normalizedAddress.substring(0, 10) + "...",
+        method: verificationMethod,
+      });
+    } catch (verificationError) {
+      Logger.error("Signature verification failed", {
+        requestId,
+        error: verificationError.message,
+        address: normalizedAddress.substring(0, 10) + "...",
+      });
+      return res.status(401).json({
+        error: "Signature verification failed: " + verificationError.message,
+      });
     }
 
-    // Update nonce for security
+    // Update user nonce and last login
+    const oldNonce = user.nonce;
     user.nonce = generateNonce();
     user.lastLogin = new Date();
     await user.save();
 
+    Logger.info("User updated after successful authentication", {
+      requestId,
+      userId: user._id,
+      oldNonce,
+      newNonce: user.nonce,
+      lastLogin: user.lastLogin,
+    });
+
     // Generate tokens
     const accessToken = generateAccessToken(normalizedAddress);
-    const refreshToken = await generateRefreshToken(
-      user._id,
-      normalizedAddress
-    );
+    const refreshToken = await generateRefreshToken(user._id, normalizedAddress);
+
+    Logger.success("Authentication completed successfully", {
+      requestId,
+      userId: user._id,
+      address: normalizedAddress.substring(0, 10) + "...",
+      tokenGenerated: true,
+    });
 
     res.json({
       accessToken,
@@ -259,7 +482,11 @@ exports.authenticate = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.error("Authentication error:", err);
+    Logger.error("Authentication error", {
+      requestId,
+      error: err.message,
+      stack: err.stack,
+    });
 
     if (err.message.includes("Invalid")) {
       return res.status(400).json({ error: err.message });
@@ -269,52 +496,82 @@ exports.authenticate = async (req, res, next) => {
   }
 };
 
-// Refresh token endpoint
+// Refresh token endpoint with logger
 exports.refreshToken = async (req, res, next) => {
-  const { refreshToken } = req.body;
-
-  if (!refreshToken) {
-    return res.status(400).json({ error: "Refresh token is required" });
-  }
+  const requestId = req.requestId || "unknown";
 
   try {
+    Logger.info("Token refresh request received", { requestId });
+
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      Logger.warn("Token refresh failed - missing refresh token", { requestId });
+      return res.status(400).json({ error: "Refresh token is required" });
+    }
+
     const tokenDoc = await RefreshToken.findOne({
       token: refreshToken,
       expiresAt: { $gt: new Date() },
     });
 
     if (!tokenDoc) {
-      return res
-        .status(401)
-        .json({ error: "Invalid or expired refresh token" });
+      Logger.warn("Token refresh failed - invalid or expired token", {
+        requestId,
+        tokenPrefix: refreshToken.substring(0, 10) + "...",
+      });
+      return res.status(401).json({ error: "Invalid or expired refresh token" });
     }
 
-    // Generate new access token
     const accessToken = generateAccessToken(tokenDoc.publicAddress);
+
+    Logger.success("Token refresh successful", {
+      requestId,
+      userId: tokenDoc.user,
+      address: tokenDoc.publicAddress.substring(0, 10) + "...",
+    });
 
     res.json({
       accessToken,
       expiresIn: getJwtExpiryInSeconds(),
     });
   } catch (err) {
-    console.error("Refresh token error:", err);
+    Logger.error("Token refresh error", {
+      requestId,
+      error: err.message,
+    });
     next(err);
   }
 };
 
-// Logout endpoint to invalidate refresh token
+// Logout endpoint with logger
 exports.logout = async (req, res, next) => {
-  const { refreshToken } = req.body;
-
-  if (!refreshToken) {
-    return res.status(400).json({ error: "Refresh token is required" });
-  }
+  const requestId = req.requestId || "unknown";
 
   try {
-    await RefreshToken.deleteOne({ token: refreshToken });
+    Logger.info("Logout request received", { requestId });
+
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      Logger.warn("Logout failed - missing refresh token", { requestId });
+      return res.status(400).json({ error: "Refresh token is required" });
+    }
+
+    const result = await RefreshToken.deleteOne({ token: refreshToken });
+
+    Logger.success("Logout successful", {
+      requestId,
+      tokensDeleted: result.deletedCount,
+      tokenPrefix: refreshToken.substring(0, 10) + "...",
+    });
+
     res.json({ message: "Logged out successfully" });
   } catch (err) {
-    console.error("Logout error:", err);
+    Logger.error("Logout error", {
+      requestId,
+      error: err.message,
+    });
     next(err);
   }
 };
