@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { Web3 } = require("web3");
 const { generateNonce } = require("../utils/crypto");
+const {
+  sanitizeEthereumAddress,
+  sanitizeSignature,
+} = require("../middleware/sanitization");
 
 // Initialize Web3 with provider
 const web3 = new Web3(process.env.ETH_NODE_URL);
@@ -197,9 +201,15 @@ const generateRefreshToken = async (userId, publicAddress) => {
 
 // Authentication controller with refresh tokens
 exports.authenticate = async (req, res, next) => {
-  const { publicAddress, signature } = req.body;
-
   try {
+    // Sanitize inputs with specific validators
+    const publicAddress = sanitizeEthereumAddress(req.body.publicAddress);
+    const signature = sanitizeSignature(req.body.signature);
+
+    if (!publicAddress || !signature) {
+      return res.status(400).json({ error: "Invalid input data" });
+    }
+
     // Normalize address to lowercase for consistency
     const normalizedAddress = publicAddress.toLowerCase();
 
@@ -250,6 +260,11 @@ exports.authenticate = async (req, res, next) => {
     });
   } catch (err) {
     console.error("Authentication error:", err);
+
+    if (err.message.includes("Invalid")) {
+      return res.status(400).json({ error: err.message });
+    }
+
     next(err);
   }
 };

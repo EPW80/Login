@@ -1,14 +1,18 @@
 const User = require("../models/User");
 const { generateNonce } = require("../utils/crypto");
+const { sanitizeEthereumAddress } = require("../middleware/sanitization");
 
 exports.findOrCreate = async (req, res, next) => {
-  const { publicAddress } = req.body;
-
-  if (!publicAddress) {
-    return res.status(400).json({ error: "Public address is required" });
-  }
-
   try {
+    // Sanitize and validate Ethereum address
+    const publicAddress = sanitizeEthereumAddress(req.body.publicAddress);
+
+    if (!publicAddress) {
+      return res
+        .status(400)
+        .json({ error: "Valid Ethereum address is required" });
+    }
+
     // Normalize address to lowercase
     const normalizedAddress = publicAddress.toLowerCase();
 
@@ -30,6 +34,12 @@ exports.findOrCreate = async (req, res, next) => {
       nonce: user.nonce,
     });
   } catch (error) {
+    console.error("User creation error:", error);
+
+    if (error.message.includes("Invalid")) {
+      return res.status(400).json({ error: error.message });
+    }
+
     next(error);
   }
 };

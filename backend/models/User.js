@@ -49,14 +49,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: () => Math.floor(Math.random() * 1000000).toString(),
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     timestamps: true,

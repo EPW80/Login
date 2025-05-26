@@ -23,12 +23,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-// Import security middleware
+// Import security and sanitization middleware
 const {
   generalLimiter,
   securityHeaders,
   speedLimiter,
 } = require("./middleware/security");
+
+const { sanitizeInput, mongoSanitize } = require("./middleware/sanitization");
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -67,6 +69,10 @@ app.set("trust proxy", 1);
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+// Apply sanitization middleware AFTER body parsing
+app.use(mongoSanitize()); // Prevents NoSQL injection
+app.use(sanitizeInput); // Custom XSS protection
 
 // Routes
 app.use("/api/auth", authRoutes);

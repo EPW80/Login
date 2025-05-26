@@ -32,14 +32,10 @@ const speedLimiter = slowDown({
   // Fixed delayMs for express-slow-down v2
   delayMs: (used, req) => {
     const delayAfter = req.slowDown.limit;
-    return (used - delayAfter) * 500; // 500ms delay per request after delayAfter
+    return (used - delayAfter) * 500;
   },
 
   maxDelayMs: 5000, // Maximum delay of 5 seconds
-
-  onLimitReached: (req, res, options) => {
-    console.warn(`Speed limit reached for IP: ${req.ip}`);
-  },
 
   // Disable the warning message
   validate: {
