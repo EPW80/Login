@@ -455,10 +455,11 @@ exports.authenticate = async (req, res, next) => {
     Logger.info("User updated after successful authentication", {
       requestId,
       userId: user._id,
-      oldNonce,
-      newNonce: user.nonce,
-      lastLogin: user.lastLogin,
+      oldNonce: user.nonce,
+      newNonce: user.generateNewNonce(),
     });
+
+    await user.updateLoginInfo(req.ip, req.get('User-Agent'));
 
     // Generate tokens
     const accessToken = generateAccessToken(normalizedAddress);

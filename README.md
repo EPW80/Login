@@ -2,7 +2,7 @@
 
 A modern, secure Web3 authentication application that enables users to connect and authenticate using their MetaMask wallet. Built with React, Node.js, and blockchain technology for seamless decentralized identity management.
 
-<!-- ![Block Secure Demo](https://via.placeholder.com/800x400/0f172a/4299e1?text=Block+Secure+Demo) -->
+![Block Secure Demo](./metamask-login-app/public/shot.png)
 
 ## ✨ Features
 
@@ -78,8 +78,8 @@ Before running the application, ensure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/metamask-login-app.git
-cd metamask-login-app
+git clone https://github.com/yourusername/login.git
+cd login
 ```
 
 ### 2. Backend Setup
