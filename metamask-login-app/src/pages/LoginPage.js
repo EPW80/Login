@@ -70,7 +70,7 @@ const LoginPage = () => {
     );
   }, []);
 
-  // Check initial connection state - Fixed dependencies
+  // Check initial connection state - Enhanced error handling
   const checkConnection = useCallback(async () => {
     if (!isMetaMaskAvailable()) {
       authError("MetaMask not detected. Please install MetaMask to continue.");
@@ -78,14 +78,27 @@ const LoginPage = () => {
     }
 
     try {
-      // Check chain
+      // Check chain with fallback
       try {
         const chainId = await window.ethereum.request({
           method: "eth_chainId",
         });
         setNetwork(parseInt(chainId, 16));
       } catch (chainError) {
-        console.warn("Could not get chain ID:", chainError);
+        console.warn(
+          "Could not get chain ID, using fallback:",
+          chainError.message
+        );
+        // Try alternative method or set default
+        try {
+          const networkVersion = await window.ethereum.request({
+            method: "net_version",
+          });
+          setNetwork(parseInt(networkVersion, 10));
+        } catch (networkError) {
+          console.warn("Could not get network version, using default");
+          setNetwork(1); // Default to mainnet
+        }
       }
 
       // Check existing connection
@@ -94,9 +107,14 @@ const LoginPage = () => {
           method: "eth_accounts",
         });
         if (accounts.length > 0) {
-          const chainId = await window.ethereum.request({
-            method: "eth_chainId",
-          });
+          // Get chain ID again for connected wallet
+          let chainId;
+          try {
+            chainId = await window.ethereum.request({ method: "eth_chainId" });
+          } catch (e) {
+            chainId = "0x1"; // Default to mainnet
+          }
+
           walletConnected(accounts[0], parseInt(chainId, 16));
           setStatusMessage("Wallet connected successfully!", "success");
         }
