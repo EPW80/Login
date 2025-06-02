@@ -170,10 +170,7 @@ userSchema.pre("save", function (next) {
   }
 
   // Limit login history to last 10 entries
-  if (
-    this.metadata.loginHistory &&
-    this.metadata.loginHistory.length > 10
-  ) {
+  if (this.metadata.loginHistory && this.metadata.loginHistory.length > 10) {
     this.metadata.loginHistory = this.metadata.loginHistory.slice(-10);
   }
 
@@ -248,7 +245,10 @@ userSchema.virtual("displayName").get(function () {
   if (this.username) return this.username;
   if (this.email) return this.email.split("@")[0];
   if (this.publicAddress)
-    return `${this.publicAddress.substring(0, 6)}...${this.publicAddress.substring(38)}`;
+    return `${this.publicAddress.substring(
+      0,
+      6
+    )}...${this.publicAddress.substring(38)}`;
   return "Anonymous User";
 });
 

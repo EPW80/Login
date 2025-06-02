@@ -133,7 +133,9 @@ const generateAccessToken = (publicAddress) => {
   }
 
   if (!process.env.JWT_SECRET) {
-    Logger.error("Access token generation failed", { reason: "Missing JWT_SECRET" });
+    Logger.error("Access token generation failed", {
+      reason: "Missing JWT_SECRET",
+    });
     throw new Error("JWT_SECRET environment variable is required");
   }
 
@@ -173,7 +175,9 @@ const generateRefreshToken = async (userId, publicAddress) => {
       userId: !!userId,
       publicAddress: !!publicAddress,
     });
-    throw new Error("User ID and public address are required for refresh token generation");
+    throw new Error(
+      "User ID and public address are required for refresh token generation"
+    );
   }
 
   try {
@@ -294,7 +298,8 @@ exports.authenticate = async (req, res, next) => {
         length: signature.length,
       });
       return res.status(400).json({
-        error: "Signature must be a valid Ethereum signature (0x + 130 hex characters)",
+        error:
+          "Signature must be a valid Ethereum signature (0x + 130 hex characters)",
       });
     }
 
@@ -319,7 +324,9 @@ exports.authenticate = async (req, res, next) => {
 
     if (!sanitizedAddress || !sanitizedSignature) {
       Logger.error("Sanitization resulted in empty values", { requestId });
-      return res.status(400).json({ error: "Invalid input data after sanitization" });
+      return res
+        .status(400)
+        .json({ error: "Invalid input data after sanitization" });
     }
 
     const normalizedAddress = sanitizedAddress.toLowerCase();
@@ -385,7 +392,10 @@ exports.authenticate = async (req, res, next) => {
 
         try {
           // Method 2: Using Web3 recover with plain message
-          recoveredAddress = web3.eth.accounts.recover(message, sanitizedSignature);
+          recoveredAddress = web3.eth.accounts.recover(
+            message,
+            sanitizedSignature
+          );
           verificationMethod = "plainMessage";
 
           Logger.debug("Signature verification method 2 successful", {
@@ -459,11 +469,14 @@ exports.authenticate = async (req, res, next) => {
       newNonce: user.generateNewNonce(),
     });
 
-    await user.updateLoginInfo(req.ip, req.get('User-Agent'));
+    await user.updateLoginInfo(req.ip, req.get("User-Agent"));
 
     // Generate tokens
     const accessToken = generateAccessToken(normalizedAddress);
-    const refreshToken = await generateRefreshToken(user._id, normalizedAddress);
+    const refreshToken = await generateRefreshToken(
+      user._id,
+      normalizedAddress
+    );
 
     Logger.success("Authentication completed successfully", {
       requestId,
@@ -507,7 +520,9 @@ exports.refreshToken = async (req, res, next) => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      Logger.warn("Token refresh failed - missing refresh token", { requestId });
+      Logger.warn("Token refresh failed - missing refresh token", {
+        requestId,
+      });
       return res.status(400).json({ error: "Refresh token is required" });
     }
 
@@ -521,7 +536,9 @@ exports.refreshToken = async (req, res, next) => {
         requestId,
         tokenPrefix: refreshToken.substring(0, 10) + "...",
       });
-      return res.status(401).json({ error: "Invalid or expired refresh token" });
+      return res
+        .status(401)
+        .json({ error: "Invalid or expired refresh token" });
     }
 
     const accessToken = generateAccessToken(tokenDoc.publicAddress);
