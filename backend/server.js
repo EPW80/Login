@@ -35,6 +35,7 @@ const { sanitizeInput, mongoSanitize } = require("./middleware/sanitization");
 // Import routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const indexRoutes = require("./routes/index");
 
 const app = express();
 
@@ -77,6 +78,7 @@ app.use(sanitizeInput); // Custom XSS protection
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/", indexRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
